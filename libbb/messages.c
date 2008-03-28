@@ -7,8 +7,11 @@
 #include "libbb.h"
 
 /* allow version to be extended, via CFLAGS */
+#ifndef BB_BUILD_TAG
+#define BB_BUILD_TAG AUTOCONF_TIMESTAMP
+#endif
 #ifndef BB_EXTRA_VERSION
-#define BB_EXTRA_VERSION " ("AUTOCONF_TIMESTAMP")"
+#define BB_EXTRA_VERSION " ("BB_BUILD_TAG")"
 #endif
 
 const char bb_banner[] ALIGN1 = "BusyBox v" BB_VER BB_EXTRA_VERSION;
