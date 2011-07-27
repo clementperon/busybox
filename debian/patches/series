@@ -31,3 +31,4 @@ swaponoff-FreeBSD-support.patch
 
 # not sent upstream
 init-console-CRTSCTS.patch
+udhcpc-emit-correct-secs-field.diff
