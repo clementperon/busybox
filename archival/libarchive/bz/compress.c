@@ -61,7 +61,7 @@ void bsFinishWrite(EState* s)
 /*---------------------------------------------------*/
 static
 /* Helps only on level 5, on other levels hurts. ? */
-#if CONFIG_BZIP2_FEATURE_SPEED >= 5
+#if CONFIG_BZIP2_FAST >= 5
 ALWAYS_INLINE
 #endif
 void bsW(EState* s, int32_t n, uint32_t v)
@@ -249,7 +249,7 @@ void generateMTFValues(EState* s)
 static NOINLINE
 void sendMTFValues(EState* s)
 {
-	int32_t v, t, i, j, gs, ge, totc, bt, bc, iter;
+	int32_t v, t, i, j, gs, ge, bt, bc, iter;
 	int32_t nSelectors, alphaSize, minLen, maxLen, selCtr;
 	int32_t nGroups;
 
@@ -331,7 +331,7 @@ void sendMTFValues(EState* s)
 			for (v = 0; v < alphaSize; v++)
 				s->rfreq[t][v] = 0;
 
-#if CONFIG_BZIP2_FEATURE_SPEED >= 5
+#if CONFIG_BZIP2_FAST >= 5
 		/*
 		 * Set up an auxiliary length table which is used to fast-track
 		 * the common case (nGroups == 6).
@@ -345,7 +345,6 @@ void sendMTFValues(EState* s)
 		}
 #endif
 		nSelectors = 0;
-		totc = 0;
 		gs = 0;
 		while (1) {
 			/*--- Set group start & end marks. --*/
@@ -361,7 +360,7 @@ void sendMTFValues(EState* s)
 			 */
 			for (t = 0; t < nGroups; t++)
 				cost[t] = 0;
-#if CONFIG_BZIP2_FEATURE_SPEED >= 5
+#if CONFIG_BZIP2_FAST >= 5
 			if (nGroups == 6 && 50 == ge-gs+1) {
 				/*--- fast track the common case ---*/
 				register uint32_t cost01, cost23, cost45;
@@ -411,7 +410,6 @@ void sendMTFValues(EState* s)
 					bt = t;
 				}
 			}
-			totc += bc;
 			fave[bt]++;
 			s->selector[nSelectors] = bt;
 			nSelectors++;
@@ -420,7 +418,7 @@ void sendMTFValues(EState* s)
 			 * Increment the symbol frequencies for the selected table.
 			 */
 /* 1% faster compress. +800 bytes */
-#if CONFIG_BZIP2_FEATURE_SPEED >= 4
+#if CONFIG_BZIP2_FAST >= 4
 			if (nGroups == 6 && 50 == ge-gs+1) {
 				/*--- fast track the common case ---*/
 #define BZ_ITUR(nn) s->rfreq[bt][mtfv[gs + (nn)]]++
@@ -501,14 +499,14 @@ void sendMTFValues(EState* s)
 		for (i = 0; i < 16; i++) {
 			if (sizeof(long) <= 4) {
 				inUse16 = inUse16*2 +
-					((*(uint32_t*)&(s->inUse[i * 16 + 0])
-					| *(uint32_t*)&(s->inUse[i * 16 + 4])
-					| *(uint32_t*)&(s->inUse[i * 16 + 8])
-					| *(uint32_t*)&(s->inUse[i * 16 + 12])) != 0);
+					((*(bb__aliased_uint32_t*)&(s->inUse[i * 16 + 0])
+					| *(bb__aliased_uint32_t*)&(s->inUse[i * 16 + 4])
+					| *(bb__aliased_uint32_t*)&(s->inUse[i * 16 + 8])
+					| *(bb__aliased_uint32_t*)&(s->inUse[i * 16 + 12])) != 0);
 			} else { /* Our CPU can do better */
 				inUse16 = inUse16*2 +
-					((*(uint64_t*)&(s->inUse[i * 16 + 0])
-					| *(uint64_t*)&(s->inUse[i * 16 + 8])) != 0);
+					((*(bb__aliased_uint64_t*)&(s->inUse[i * 16 + 0])
+					| *(bb__aliased_uint64_t*)&(s->inUse[i * 16 + 8])) != 0);
 			}
 		}
 

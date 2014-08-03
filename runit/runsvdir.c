@@ -35,7 +35,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //usage:     "\n	-P		Put each runsv in a new session"
 //usage:     "\n	-s SCRIPT	Run SCRIPT <signo> after signal is processed"
 
-#include <sys/poll.h>
 #include <sys/file.h>
 #include "libbb.h"
 #include "runit_lib.h"
@@ -75,8 +74,7 @@ struct globals {
 #define logpipe     (G.logpipe     )
 #define pfd         (G.pfd         )
 #define stamplog    (G.stamplog    )
-#define INIT_G() do { \
-} while (0)
+#define INIT_G() do { } while (0)
 
 static void fatal2_cannot(const char *m1, const char *m2)
 {

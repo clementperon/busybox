@@ -290,9 +290,10 @@
 #endif
 
 
-#define OPT_STRING "FIlnrdvxt:i:m:p:q:s:w:z:f:" \
-		    IF_FEATURE_TRACEROUTE_SOURCE_ROUTE("g:") \
-		    "4" IF_TRACEROUTE6("6")
+#define OPT_STRING \
+	"FIlnrdvxt:i:m:p:q:s:w:z:f:" \
+	IF_FEATURE_TRACEROUTE_SOURCE_ROUTE("g:") \
+	"4" IF_TRACEROUTE6("6")
 enum {
 	OPT_DONT_FRAGMNT = (1 << 0),    /* F */
 	OPT_USE_ICMP     = (1 << 1) * ENABLE_FEATURE_TRACEROUTE_USE_ICMP, /* I */
@@ -418,39 +419,6 @@ wait_for_reply(len_and_sockaddr *from_lsa, struct sockaddr *to, unsigned *timest
 	return read_len;
 }
 
-/*
- * Checksum routine for Internet Protocol family headers (C Version)
- */
-static uint16_t
-in_cksum(uint16_t *addr, int len)
-{
-	int nleft = len;
-	uint16_t *w = addr;
-	uint16_t answer;
-	int sum = 0;
-
-	/*
-	 * Our algorithm is simple, using a 32 bit accumulator (sum),
-	 * we add sequential 16 bit words to it, and at the end, fold
-	 * back all the carry bits from the top 16 bits into the lower
-	 * 16 bits.
-	 */
-	while (nleft > 1) {
-		sum += *w++;
-		nleft -= 2;
-	}
-
-	/* mop up an odd byte, if necessary */
-	if (nleft == 1)
-		sum += *(unsigned char *)w;
-
-	/* add back carry outs from top 16 bits to low 16 bits */
-	sum = (sum >> 16) + (sum & 0xffff);     /* add hi 16 to low 16 */
-	sum += (sum >> 16);                     /* add carry */
-	answer = ~sum;                          /* truncate to 16 bits */
-	return answer;
-}
-
 static void
 send_probe(int seq, int ttl)
 {
@@ -477,7 +445,7 @@ send_probe(int seq, int ttl)
 
 			/* Always calculate checksum for icmp packets */
 			outicmp->icmp_cksum = 0;
-			outicmp->icmp_cksum = in_cksum((uint16_t *)outicmp,
+			outicmp->icmp_cksum = inet_cksum((uint16_t *)outicmp,
 						packlen - (sizeof(*outip) + optlen));
 			if (outicmp->icmp_cksum == 0)
 				outicmp->icmp_cksum = 0xffff;
@@ -823,7 +791,9 @@ static int
 common_traceroute_main(int op, char **argv)
 {
 	int minpacket;
+#ifdef IP_TOS
 	int tos = 0;
+#endif
 	int max_ttl = 30;
 	int nprobes = 3;
 	int first_ttl = 1;
@@ -837,6 +807,7 @@ common_traceroute_main(int op, char **argv)
 	char *waittime_str;
 	char *pausemsecs_str;
 	char *first_ttl_str;
+	char *dest_str;
 #if ENABLE_FEATURE_TRACEROUTE_SOURCE_ROUTE
 	llist_t *source_route_list = NULL;
 	int lsrr = 0;
@@ -869,8 +840,10 @@ common_traceroute_main(int op, char **argv)
 	if (op & OPT_IP_CHKSUM)
 		bb_error_msg("warning: ip checksums disabled");
 #endif
+#ifdef IP_TOS
 	if (op & OPT_TOS)
 		tos = xatou_range(tos_str, 0, 255);
+#endif
 	if (op & OPT_MAX_TTL)
 		max_ttl = xatou_range(max_ttl_str, 1, 255);
 	if (op & OPT_PORT)
@@ -1091,8 +1064,12 @@ common_traceroute_main(int op, char **argv)
 	xsetgid(getgid());
 	xsetuid(getuid());
 
-	printf("traceroute to %s (%s)", argv[0],
-			xmalloc_sockaddr2dotted_noport(&dest_lsa->u.sa));
+	dest_str = xmalloc_sockaddr2dotted_noport(&dest_lsa->u.sa);
+	printf("traceroute to %s (%s)", argv[0], dest_str);
+	if (ENABLE_FEATURE_CLEAN_UP) {
+		free(dest_str);
+	}
+
 	if (op & OPT_SOURCE)
 		printf(" from %s", source);
 	printf(", %d hops max, %d byte packets\n", max_ttl, packlen);
@@ -1246,6 +1223,12 @@ common_traceroute_main(int op, char **argv)
 		) {
 			break;
 		}
+	}
+
+	if (ENABLE_FEATURE_CLEAN_UP) {
+		free(to);
+		free(lastaddr);
+		free(from_lsa);
 	}
 
 	return 0;

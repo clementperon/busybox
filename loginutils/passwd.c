@@ -15,11 +15,7 @@
 
 #include "libbb.h"
 #include <syslog.h>
-
-static void nuke_str(char *str)
-{
-	if (str) memset(str, 0, strlen(str));
-}
+#include <sys/resource.h> /* setrlimit */
 
 static char* new_password(const struct passwd *pw, uid_t myuid, const char *algo)
 {
@@ -94,7 +90,7 @@ int passwd_main(int argc UNUSED_PARAM, char **argv)
 	};
 	unsigned opt;
 	int rc;
-	const char *opt_a = "d"; /* des */
+	const char *opt_a = CONFIG_FEATURE_DEFAULT_PASSWD_ALGO;
 	const char *filename;
 	char *myname;
 	char *name;

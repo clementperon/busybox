@@ -27,8 +27,6 @@ lib-y += concat_subpath_file.o
 lib-y += copy_file.o
 lib-y += copyfd.o
 lib-y += crc32.o
-lib-y += create_icmp6_socket.o
-lib-y += create_icmp_socket.o
 lib-y += default_error_retval.o
 lib-y += device_open.o
 lib-y += dump.o
@@ -146,7 +144,7 @@ lib-$(CONFIG_DELUSER) += update_passwd.o
 lib-$(CONFIG_PASSWD) += pw_encrypt.o update_passwd.o obscure.o
 lib-$(CONFIG_CHPASSWD) += pw_encrypt.o update_passwd.o
 lib-$(CONFIG_CRYPTPW) += pw_encrypt.o
-lib-$(CONFIG_SULOGIN) += pw_encrypt.o
+lib-$(CONFIG_SULOGIN) += pw_encrypt.o correct_password.o
 lib-$(CONFIG_VLOCK) += pw_encrypt.o correct_password.o
 lib-$(CONFIG_SU) += pw_encrypt.o correct_password.o
 lib-$(CONFIG_LOGIN) += pw_encrypt.o correct_password.o
@@ -165,6 +163,13 @@ lib-$(CONFIG_RTCWAKE) += rtc.o
 lib-$(CONFIG_IOSTAT) += get_cpu_count.o
 lib-$(CONFIG_MPSTAT) += get_cpu_count.o
 lib-$(CONFIG_POWERTOP) += get_cpu_count.o
+
+lib-$(CONFIG_PING) += inet_cksum.o
+lib-$(CONFIG_TRACEROUTE) += inet_cksum.o
+lib-$(CONFIG_TRACEROUTE6) += inet_cksum.o
+lib-$(CONFIG_UDHCPC) += inet_cksum.o
+lib-$(CONFIG_UDHCPC6) += inet_cksum.o
+lib-$(CONFIG_UDHCPD) += inet_cksum.o
 
 # We shouldn't build xregcomp.c if we don't need it - this ensures we don't
 # require regex.h to be in the include dir even if we don't need it thereby

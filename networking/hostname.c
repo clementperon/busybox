@@ -106,7 +106,7 @@ int hostname_main(int argc UNUSED_PARAM, char **argv)
 		OPT_i = 0x4,
 		OPT_s = 0x8,
 		OPT_F = 0x10,
-		OPT_dfis = 0xf,
+		OPT_dfi = 0x7,
 	};
 
 	unsigned opts;
@@ -134,7 +134,7 @@ int hostname_main(int argc UNUSED_PARAM, char **argv)
 	if (applet_name[0] == 'd') /* dnsdomainname? */
 		opts = OPT_d;
 
-	if (opts & OPT_dfis) {
+	if (opts & OPT_dfi) {
 		/* Cases when we need full hostname (or its part) */
 		struct hostent *hp;
 		char *p;
@@ -153,12 +153,15 @@ int hostname_main(int argc UNUSED_PARAM, char **argv)
 			if (hp->h_length == sizeof(struct in_addr)) {
 				struct in_addr **h_addr_list = (struct in_addr **)hp->h_addr_list;
 				while (*h_addr_list) {
-					printf("%s ", inet_ntoa(**h_addr_list));
+					printf(h_addr_list[1] ? "%s " : "%s", inet_ntoa(**h_addr_list));
 					h_addr_list++;
 				}
 				bb_putchar('\n');
 			}
 		}
+	} else if (opts & OPT_s) {
+		strchrnul(buf, '.')[0] = '\0';
+		puts(buf);
 	} else if (opts & OPT_F) {
 		/* Set the hostname */
 		do_sethostname(hostname_str, 1);

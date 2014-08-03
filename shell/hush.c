@@ -106,10 +106,6 @@
 # define PIPE_BUF 4096  /* amount of buffering in a pipe */
 #endif
 
-/* Not every libc has sighandler_t. Fix it */
-typedef void (*hush_sighandler_t)(int);
-#define sighandler_t hush_sighandler_t
-
 //config:config HUSH
 //config:	bool "hush"
 //config:	default y
@@ -324,6 +320,8 @@ typedef void (*hush_sighandler_t)(int);
 # define ENABLE_FEATURE_EDITING 0
 # undef ENABLE_FEATURE_EDITING_FANCY_PROMPT
 # define ENABLE_FEATURE_EDITING_FANCY_PROMPT 0
+# undef ENABLE_FEATURE_EDITING_SAVE_ON_EXIT
+# define ENABLE_FEATURE_EDITING_SAVE_ON_EXIT 0
 #endif
 
 /* Do we support ANY keywords? */
@@ -524,7 +522,6 @@ typedef enum redir_type {
 struct command {
 	pid_t pid;                  /* 0 if exited */
 	int assignment_cnt;         /* how many argv[i] are assignments? */
-	smallint is_stopped;        /* is the command currently running? */
 	smallint cmd_type;          /* CMD_xxx */
 #define CMD_NORMAL   0
 #define CMD_SUBSHELL 1
@@ -853,6 +850,9 @@ static int builtin_jobs(char **argv) FAST_FUNC;
 #if ENABLE_HUSH_HELP
 static int builtin_help(char **argv) FAST_FUNC;
 #endif
+#if MAX_HISTORY && ENABLE_FEATURE_EDITING
+static int builtin_history(char **argv) FAST_FUNC;
+#endif
 #if ENABLE_HUSH_LOCAL
 static int builtin_local(char **argv) FAST_FUNC;
 #endif
@@ -921,6 +921,9 @@ static const struct built_in_command bltins1[] = {
 #endif
 #if ENABLE_HUSH_HELP
 	BLTIN("help"     , builtin_help    , NULL),
+#endif
+#if MAX_HISTORY && ENABLE_FEATURE_EDITING
+	BLTIN("history"  , builtin_history , "Show command history"),
 #endif
 #if ENABLE_HUSH_JOB
 	BLTIN("jobs"     , builtin_jobs    , "List jobs"),
@@ -1307,7 +1310,7 @@ static void restore_G_args(save_arg_t *sv, char **argv)
  * backgrounds (i.e. stops) or kills all members of currently running
  * pipe.
  *
- * Wait builtin in interruptible by signals for which user trap is set
+ * Wait builtin is interruptible by signals for which user trap is set
  * or by SIGINT in interactive shell.
  *
  * Trap handlers will execute even within trap handlers. (right?)
@@ -1386,7 +1389,7 @@ static void restore_G_args(save_arg_t *sv, char **argv)
  * are set to '' (ignore) are NOT reset to defaults. We do the same.
  *
  * Problem: the above approach makes it unwieldy to catch signals while
- * we are in read builtin, of while we read commands from stdin:
+ * we are in read builtin, or while we read commands from stdin:
  * masked signals are not visible!
  *
  * New implementation
@@ -1395,7 +1398,7 @@ static void restore_G_args(save_arg_t *sv, char **argv)
  * for them - a bit like emulating kernel pending signal mask in userspace.
  * We are interested in: signals which need to have special handling
  * as described above, and all signals which have traps set.
- * Signals are rocorded in pending_set.
+ * Signals are recorded in pending_set.
  * After each pipe execution, we extract any pending signals
  * and act on them.
  *
@@ -1541,6 +1544,10 @@ static sighandler_t pick_sighandler(unsigned sig)
 static void hush_exit(int exitcode) NORETURN;
 static void hush_exit(int exitcode)
 {
+#if ENABLE_FEATURE_EDITING_SAVE_ON_EXIT
+	save_history(G.line_input_state);
+#endif
+
 	fflush_all();
 	if (G.exiting <= 0 && G.traps && G.traps[0] && G.traps[0][0]) {
 		char *argv[3];
@@ -2037,7 +2044,10 @@ static void get_user_input(struct in_str *i)
 		 * _during_ shell execution, not only if it was set when
 		 * shell was started. Therefore, re-check LANG every time:
 		 */
-		reinit_unicode(get_local_var_value("LANG"));
+		const char *s = get_local_var_value("LC_ALL");
+		if (!s) s = get_local_var_value("LC_CTYPE");
+		if (!s) s = get_local_var_value("LANG");
+		reinit_unicode(s);
 
 		G.flag_SIGINT = 0;
 		/* buglet: SIGINT will not make new prompt to appear _at once_,
@@ -4218,7 +4228,7 @@ static struct pipe *parse_stream(char **pstring,
 			/* (this makes bare "&" cmd a no-op.
 			 * bash says: "syntax error near unexpected token '&'") */
 			if (pi->num_cmds == 0
-			    IF_HAS_KEYWORDS( && pi->res_word == RES_NONE)
+			IF_HAS_KEYWORDS(&& pi->res_word == RES_NONE)
 			) {
 				free_pipe_list(pi);
 				pi = NULL;
@@ -4371,7 +4381,7 @@ static struct pipe *parse_stream(char **pstring,
 			debug_printf_parse("dest.o_assignment='%s'\n", assignment_flag[dest.o_assignment]);
 			/* Do we sit outside of any if's, loops or case's? */
 			if (!HAS_KEYWORDS
-			 IF_HAS_KEYWORDS(|| (ctx.ctx_res_w == RES_NONE && ctx.old_flag == 0))
+			IF_HAS_KEYWORDS(|| (ctx.ctx_res_w == RES_NONE && ctx.old_flag == 0))
 			) {
 				o_free(&dest);
 #if !BB_MMU
@@ -6763,7 +6773,6 @@ static int checkjobs(struct pipe *fg_pipe)
 					}
 					fg_pipe->cmds[i].cmd_exitcode = ex;
 				} else {
-					fg_pipe->cmds[i].is_stopped = 1;
 					fg_pipe->stopped_cmds++;
 				}
 				debug_printf_jobs("fg_pipe: alive_cmds %d stopped_cmds %d\n",
@@ -6824,7 +6833,6 @@ static int checkjobs(struct pipe *fg_pipe)
 			}
 		} else {
 			/* child stopped */
-			pi->cmds[i].is_stopped = 1;
 			pi->stopped_cmds++;
 		}
 #endif
@@ -7355,7 +7363,7 @@ static int run_list(struct pipe *pi)
 				 * and we should not execute CMD */
 				debug_printf_exec("skipped cmd because of || or &&\n");
 				last_followup = pi->followup;
-				continue;
+				goto dont_check_jobs_but_continue;
 			}
 		}
 		last_followup = pi->followup;
@@ -7494,8 +7502,10 @@ static int run_list(struct pipe *pi)
 							G.flag_break_continue = 0;
 						/* else: e.g. "continue 2" should *break* once, *then* continue */
 					} /* else: "while... do... { we are here (innermost list is not a loop!) };...done" */
-					if (G.depth_break_continue != 0 || fbc == BC_BREAK)
-						goto check_jobs_and_break;
+					if (G.depth_break_continue != 0 || fbc == BC_BREAK) {
+						checkjobs(NULL);
+						break;
+					}
 					/* "continue": simulate end of loop */
 					rword = RES_DONE;
 					continue;
@@ -7503,7 +7513,6 @@ static int run_list(struct pipe *pi)
 #endif
 #if ENABLE_HUSH_FUNCTIONS
 				if (G.flag_return_in_progress == 1) {
-					/* same as "goto check_jobs_and_break" */
 					checkjobs(NULL);
 					break;
 				}
@@ -7545,6 +7554,9 @@ static int run_list(struct pipe *pi)
 		if (rword == RES_IF || rword == RES_ELIF)
 			cond_code = rcode;
 #endif
+ check_jobs_and_continue:
+		checkjobs(NULL);
+ dont_check_jobs_but_continue: ;
 #if ENABLE_HUSH_LOOPS
 		/* Beware of "while false; true; do ..."! */
 		if (pi->next
@@ -7556,22 +7568,17 @@ static int run_list(struct pipe *pi)
 					/* "while false; do...done" - exitcode 0 */
 					G.last_exitcode = rcode = EXIT_SUCCESS;
 					debug_printf_exec(": while expr is false: breaking (exitcode:EXIT_SUCCESS)\n");
-					goto check_jobs_and_break;
+					break;
 				}
 			}
 			if (rword == RES_UNTIL) {
 				if (!rcode) {
 					debug_printf_exec(": until expr is true: breaking\n");
- check_jobs_and_break:
-					checkjobs(NULL);
 					break;
 				}
 			}
 		}
 #endif
-
- check_jobs_and_continue:
-		checkjobs(NULL);
 	} /* for (pi) */
 
 #if ENABLE_HUSH_JOB
@@ -7817,26 +7824,6 @@ int hush_main(int argc, char **argv)
 
 #if ENABLE_FEATURE_EDITING
 	G.line_input_state = new_line_input_t(FOR_SHELL);
-# if MAX_HISTORY > 0 && ENABLE_HUSH_SAVEHISTORY
-	{
-		const char *hp = get_local_var_value("HISTFILE");
-		if (!hp) {
-			hp = get_local_var_value("HOME");
-			if (hp)
-				hp = concat_path_file(hp, ".hush_history");
-		} else {
-			hp = xstrdup(hp);
-		}
-		if (hp) {
-			G.line_input_state->hist_file = hp;
-			//set_local_var(xasprintf("HISTFILE=%s", ...));
-		}
-#  if ENABLE_FEATURE_SH_HISTFILESIZE
-		hp = get_local_var_value("HISTFILESIZE");
-		G.line_input_state->max_history = size_from_HISTFILESIZE(hp);
-#  endif
-	}
-# endif
 #endif
 
 	/* Initialize some more globals to non-zero values */
@@ -8108,6 +8095,27 @@ int hush_main(int argc, char **argv)
 		/* -1 is special - makes xfuncs longjmp, not exit
 		 * (we reset die_sleep = 0 whereever we [v]fork) */
 		enable_restore_tty_pgrp_on_exit(); /* sets die_sleep = -1 */
+
+# if ENABLE_HUSH_SAVEHISTORY && MAX_HISTORY > 0
+		{
+			const char *hp = get_local_var_value("HISTFILE");
+			if (!hp) {
+				hp = get_local_var_value("HOME");
+				if (hp)
+					hp = concat_path_file(hp, ".hush_history");
+			} else {
+				hp = xstrdup(hp);
+			}
+			if (hp) {
+				G.line_input_state->hist_file = hp;
+				//set_local_var(xasprintf("HISTFILE=%s", ...));
+			}
+#  if ENABLE_FEATURE_SH_HISTFILESIZE
+			hp = get_local_var_value("HISTFILESIZE");
+			G.line_input_state->max_history = size_from_HISTFILESIZE(hp);
+#  endif
+		}
+# endif
 	} else {
 		install_special_sighandlers();
 	}
@@ -8281,7 +8289,7 @@ static int FAST_FUNC builtin_exit(char **argv)
 	 * (if there are _stopped_ jobs, running ones don't count)
 	 * # exit
 	 * exit
-	 # EEE (then bash exits)
+	 * EEE (then bash exits)
 	 *
 	 * TODO: we can use G.exiting = -1 as indicator "last cmd was exit"
 	 */
@@ -8591,7 +8599,6 @@ static int FAST_FUNC builtin_fg_bg(char **argv)
 	debug_printf_jobs("reviving %d procs, pgrp %d\n", pi->num_cmds, pi->pgrp);
 	for (i = 0; i < pi->num_cmds; i++) {
 		debug_printf_jobs("reviving pid %d\n", pi->cmds[i].pid);
-		pi->cmds[i].is_stopped = 0;
 	}
 	pi->stopped_cmds = 0;
 
@@ -8625,6 +8632,14 @@ static int FAST_FUNC builtin_help(char **argv UNUSED_PARAM)
 			printf("%-10s%s\n", x->b_cmd, x->b_descr);
 	}
 	bb_putchar('\n');
+	return EXIT_SUCCESS;
+}
+#endif
+
+#if MAX_HISTORY && ENABLE_FEATURE_EDITING
+static int FAST_FUNC builtin_history(char **argv UNUSED_PARAM)
+{
+	show_history(G.line_input_state);
 	return EXIT_SUCCESS;
 }
 #endif
@@ -8881,6 +8896,9 @@ static int FAST_FUNC builtin_source(char **argv)
 	free(arg_path);
 	if (!input) {
 		/* bb_perror_msg("%s", *argv); - done by fopen_or_warn */
+		/* POSIX: non-interactive shell should abort here,
+		 * not merely fail. So far no one complained :)
+		 */
 		return EXIT_FAILURE;
 	}
 	close_on_exec_on(fileno(input));
@@ -8890,12 +8908,14 @@ static int FAST_FUNC builtin_source(char **argv)
 	/* "we are inside sourced file, ok to use return" */
 	G.flag_return_in_progress = -1;
 #endif
-	save_and_replace_G_args(&sv, argv);
+	if (argv[1])
+		save_and_replace_G_args(&sv, argv);
 
 	parse_and_run_file(input);
 	fclose(input);
 
-	restore_G_args(&sv, argv);
+	if (argv[1])
+		restore_G_args(&sv, argv);
 #if ENABLE_HUSH_FUNCTIONS
 	G.flag_return_in_progress = sv_flg;
 #endif

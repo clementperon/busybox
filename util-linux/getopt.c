@@ -32,29 +32,52 @@
  */
 
 //usage:#define getopt_trivial_usage
-//usage:       "[OPTIONS]"
+//usage:       "[OPTIONS] [--] OPTSTRING PARAMS"
 //usage:#define getopt_full_usage "\n\n"
 //usage:	IF_LONG_OPTS(
-//usage:       "	-a,--alternative		Allow long options starting with single -"
-//usage:     "\n	-l,--longoptions=longopts	Long options to be recognized"
-//usage:     "\n	-n,--name=progname		The name under which errors are reported"
-//usage:     "\n	-o,--options=optstring		Short options to be recognized"
-//usage:     "\n	-q,--quiet			Disable error reporting by getopt(3)"
+//usage:	IF_FEATURE_GETOPT_LONG(
+//usage:       "	-a,--alternative		Allow long options starting with single -\n"
+//usage:       "	-l,--longoptions=LOPT[,...]	Long options to recognize\n"
+//usage:	)
+//usage:       "	-n,--name=PROGNAME		The name under which errors are reported"
+//usage:     "\n	-o,--options=OPTSTRING		Short options to recognize"
+//usage:     "\n	-q,--quiet			No error messages on unrecognized options"
 //usage:     "\n	-Q,--quiet-output		No normal output"
-//usage:     "\n	-s,--shell=shell		Set shell quoting conventions"
-//usage:     "\n	-T,--test			Test for getopt(1) version"
-//usage:     "\n	-u,--unquoted			Don't quote the output"
+//usage:     "\n	-s,--shell=SHELL		Set shell quoting conventions"
+//usage:     "\n	-T,--test			Version test (exits with 4)"
+//usage:     "\n	-u,--unquoted			Don't quote output"
 //usage:	)
 //usage:	IF_NOT_LONG_OPTS(
-//usage:       "	-a		Allow long options starting with single -"
-//usage:     "\n	-l longopts	Long options to be recognized"
-//usage:     "\n	-n progname	The name under which errors are reported"
-//usage:     "\n	-o optstring	Short options to be recognized"
-//usage:     "\n	-q		Disable error reporting by getopt(3)"
+//usage:	IF_FEATURE_GETOPT_LONG(
+//usage:       "	-a		Allow long options starting with single -\n"
+//usage:       "	-l LOPT[,...]	Long options to recognize\n"
+//usage:	)
+//usage:       "	-n PROGNAME	The name under which errors are reported"
+//usage:     "\n	-o OPTSTRING	Short options to recognize"
+//usage:     "\n	-q		No error messages on unrecognized options"
 //usage:     "\n	-Q		No normal output"
-//usage:     "\n	-s shell	Set shell quoting conventions"
-//usage:     "\n	-T		Test for getopt(1) version"
-//usage:     "\n	-u		Don't quote the output"
+//usage:     "\n	-s SHELL	Set shell quoting conventions"
+//usage:     "\n	-T		Version test (exits with 4)"
+//usage:     "\n	-u		Don't quote output"
+//usage:	)
+//usage:	IF_FEATURE_GETOPT_LONG( /* example uses -l, needs FEATURE_GETOPT_LONG */
+//usage:     "\n"
+//usage:     "\nExample:"
+//usage:     "\n"
+//usage:     "\nO=`getopt -l bb: -- ab:c:: \"$@\"` || exit 1"
+//usage:     "\neval set -- \"$O\""
+//usage:     "\nwhile true; do"
+//usage:     "\n	case \"$1\" in"
+//usage:     "\n	-a)	echo A; shift;;"
+//usage:     "\n	-b|--bb) echo \"B:'$2'\"; shift 2;;"
+//usage:     "\n	-c)	case \"$2\" in"
+//usage:     "\n		\"\")	echo C; shift 2;;"
+//usage:     "\n		*)	echo \"C:'$2'\"; shift 2;;"
+//usage:     "\n		esac;;"
+//usage:     "\n	--)	shift; break;;"
+//usage:     "\n	*)	echo Error; exit 1;;"
+//usage:     "\n	esac"
+//usage:     "\ndone"
 //usage:	)
 //usage:
 //usage:#define getopt_example_usage
@@ -197,11 +220,6 @@ static const char *normalize(const char *arg)
 static int generate_output(char **argv, int argc, const char *optstr, const struct option *longopts)
 {
 	int exit_code = 0; /* We assume everything will be OK */
-	int opt;
-#if ENABLE_FEATURE_GETOPT_LONG
-	int longindex;
-#endif
-	const char *charptr;
 
 	if (quiet_errors) /* No error reporting from getopt(3) */
 		opterr = 0;
@@ -216,13 +234,14 @@ static int generate_output(char **argv, int argc, const char *optstr, const stru
 #endif
 
 	while (1) {
-		opt =
 #if ENABLE_FEATURE_GETOPT_LONG
-			alternative ?
-			getopt_long_only(argc, argv, optstr, longopts, &longindex) :
-			getopt_long(argc, argv, optstr, longopts, &longindex);
+		int longindex;
+		int opt = alternative
+			? getopt_long_only(argc, argv, optstr, longopts, &longindex)
+			: getopt_long(argc, argv, optstr, longopts, &longindex)
+		;
 #else
-			getopt(argc, argv, optstr);
+		int opt = getopt(argc, argv, optstr);
 #endif
 		if (opt == -1)
 			break;
@@ -240,9 +259,10 @@ static int generate_output(char **argv, int argc, const char *optstr, const stru
 			if (opt == NON_OPT)
 				printf(" %s", normalize(optarg));
 			else {
+				const char *charptr;
 				printf(" -%c", opt);
 				charptr = strchr(optstr, opt);
-				if (charptr != NULL && *++charptr == ':')
+				if (charptr && *++charptr == ':')
 					printf(" %s",
 						normalize(optarg ? optarg : ""));
 			}
@@ -250,9 +270,11 @@ static int generate_output(char **argv, int argc, const char *optstr, const stru
 	}
 
 	if (!quiet_output) {
+		unsigned idx;
 		printf(" --");
-		while (optind < argc)
-			printf(" %s", normalize(argv[optind++]));
+		idx = optind;
+		while (argv[idx])
+			printf(" %s", normalize(argv[idx++]));
 		bb_putchar('\n');
 	}
 	return exit_code;
@@ -339,6 +361,7 @@ static const char getopt_longopts[] ALIGN1 =
 int getopt_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int getopt_main(int argc, char **argv)
 {
+	int n;
 	char *optstr = NULL;
 	char *name = NULL;
 	unsigned opt;
@@ -351,10 +374,10 @@ int getopt_main(int argc, char **argv)
 
 	compatible = getenv("GETOPT_COMPATIBLE"); /* used as yes/no flag */
 
-	if (argc == 1) {
+	if (!argv[1]) {
 		if (compatible) {
 			/* For some reason, the original getopt gave no error
-			   when there were no arguments. */
+			 * when there were no arguments. */
 			printf(" --\n");
 			return 0;
 		}
@@ -362,10 +385,10 @@ int getopt_main(int argc, char **argv)
 	}
 
 	if (argv[1][0] != '-' || compatible) {
-		char *s;
+		char *s = argv[1];
 
 		option_mask32 |= OPT_u; /* quoting off */
-		s = xstrdup(argv[1] + strspn(argv[1], "-+"));
+		s = xstrdup(s + strspn(s, "-+"));
 		argv[1] = argv[0];
 		return generate_output(argv+1, argc-1, s, long_options);
 	}
@@ -392,12 +415,13 @@ int getopt_main(int argc, char **argv)
 	}
 
 	/* All options controlling the applet have now been parsed */
+	n = optind - 1;
 	if (!optstr) {
-		if (optind >= argc)
+		optstr = argv[++n];
+		if (!optstr)
 			bb_error_msg_and_die("missing optstring argument");
-		optstr = argv[optind++];
 	}
 
-	argv[optind-1] = name ? name : argv[0];
-	return generate_output(argv+optind-1, argc-optind+1, optstr, long_options);
+	argv[n] = name ? name : argv[0];
+	return generate_output(argv + n, argc - n, optstr, long_options);
 }

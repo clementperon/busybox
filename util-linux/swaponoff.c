@@ -24,7 +24,6 @@
 
 #include "libbb.h"
 #include <mntent.h>
-#include <sys/swap.h>
 #ifndef __BIONIC__
 # include <sys/swap.h>
 #endif
@@ -48,6 +47,7 @@ struct globals {
 #else
 #define g_flags 0
 #endif
+#define INIT_G() do { } while (0)
 
 static int swap_enable_disable(char *device)
 {
@@ -95,6 +95,20 @@ static int do_em_all(void)
 			if (applet_name[5] != 'n'
 			 || hasmntopt(m, MNTOPT_NOAUTO) == NULL
 			) {
+#if ENABLE_FEATURE_SWAPON_PRI
+				char *p;
+				g_flags = 0; /* each swap space might have different flags */
+				p = hasmntopt(m, "pri");
+				if (p) {
+					/* Max allowed 32767 (==SWAP_FLAG_PRIO_MASK) */
+					unsigned int swap_prio = MIN(bb_strtou(p + 4 , NULL, 10), SWAP_FLAG_PRIO_MASK);
+					/* We want to allow "NNNN,foo", thus errno == EINVAL is allowed too */
+					if (errno != ERANGE) {
+						g_flags = SWAP_FLAG_PREFER |
+							(swap_prio << SWAP_FLAG_PRIO_SHIFT);
+					}
+				}
+#endif
 				err += swap_enable_disable(m->mnt_fsname);
 			}
 		}
@@ -110,6 +124,8 @@ int swap_on_off_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
 int swap_on_off_main(int argc UNUSED_PARAM, char **argv)
 {
 	int ret;
+
+	INIT_G();
 
 #if !ENABLE_FEATURE_SWAPON_PRI
 	ret = getopt32(argv, "a");

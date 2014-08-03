@@ -1050,7 +1050,7 @@ static errcode_t ea_refcount_create(int size, ext2_refcount_t *ret)
 	refcount->size = size;
 	bytes = (size_t) (size * sizeof(struct ea_refcount_el));
 #ifdef DEBUG
-	printf("Refcount allocated %d entries, %d bytes.\n",
+	printf("Refcount allocated %d entries, %lu bytes.\n",
 	       refcount->size, bytes);
 #endif
 	retval = ext2fs_get_mem(bytes, &refcount->list);
@@ -3424,7 +3424,7 @@ static void e2fsck_pass1(e2fsck_t ctx)
 				continue;
 			}
 			if ((inode->i_links_count || inode->i_blocks ||
-			     inode->i_blocks || inode->i_block[0]) &&
+			     inode->i_block[0]) &&
 			    fix_problem(ctx, PR_1_JOURNAL_INODE_NOT_CLEAR,
 					&pctx)) {
 				memset(inode, 0, inode_size);
@@ -11577,7 +11577,7 @@ static void check_resize_inode(e2fsck_t ctx)
 	 * s_reserved_gdt_blocks must be zero.
 	 */
 	if (!(fs->super->s_feature_compat &
-	      EXT2_FEATURE_COMPAT_RESIZE_INODE)) {
+	      EXT2_FEATURE_COMPAT_RESIZE_INO)) {
 		if (fs->super->s_reserved_gdt_blocks) {
 			pctx.num = fs->super->s_reserved_gdt_blocks;
 			if (fix_problem(ctx, PR_0_NONZERO_RESERVED_GDT_BLOCKS,
@@ -11593,7 +11593,7 @@ static void check_resize_inode(e2fsck_t ctx)
 	retval = ext2fs_read_inode(fs, EXT2_RESIZE_INO, &inode);
 	if (retval) {
 		if (fs->super->s_feature_compat &
-		    EXT2_FEATURE_COMPAT_RESIZE_INODE)
+		    EXT2_FEATURE_COMPAT_RESIZE_INO)
 			ctx->flags |= E2F_FLAG_RESIZE_INODE;
 		return;
 	}
@@ -11603,7 +11603,7 @@ static void check_resize_inode(e2fsck_t ctx)
 	 * the resize inode is cleared; then we're done.
 	 */
 	if (!(fs->super->s_feature_compat &
-	      EXT2_FEATURE_COMPAT_RESIZE_INODE)) {
+	      EXT2_FEATURE_COMPAT_RESIZE_INO)) {
 		for (i=0; i < EXT2_N_BLOCKS; i++) {
 			if (inode.i_block[i])
 				break;
@@ -12195,11 +12195,7 @@ static void swap_filesys(e2fsck_t ctx)
 void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned int size,
 			     const char *description)
 {
-	void *ret;
-	char buf[256];
-
-	ret = xzalloc(size);
-	return ret;
+	return xzalloc(size);
 }
 
 static char *string_copy(const char *str, int len)

@@ -18,6 +18,7 @@
  */
 #include "libbb.h"
 #include "shell_common.h"
+#include <sys/resource.h> /* getrlimit */
 
 const char defifsvar[] ALIGN1 = "IFS= \t\n";
 
@@ -36,7 +37,7 @@ int FAST_FUNC is_well_formed_var_name(const char *s, char terminator)
 
 /* read builtin */
 
-/* Needs to be interruptible: shell mush handle traps and shell-special signals
+/* Needs to be interruptible: shell must handle traps and shell-special signals
  * while inside read. To implement this, be sure to not loop on EINTR
  * and return errno == EINTR reliably.
  */
@@ -138,7 +139,13 @@ shell_builtin_read(void FAST_FUNC (*setvar)(const char *name, const char *val),
 		old_tty = tty;
 		if (nchars) {
 			tty.c_lflag &= ~ICANON;
-			tty.c_cc[VMIN] = nchars < 256 ? nchars : 255;
+			// Setting it to more than 1 breaks poll():
+			// it blocks even if there's data. !??
+			//tty.c_cc[VMIN] = nchars < 256 ? nchars : 255;
+			/* reads would block only if < 1 char is available */
+			tty.c_cc[VMIN] = 1;
+			/* no timeout (reads block forever) */
+			tty.c_cc[VTIME] = 0;
 		}
 		if (read_flags & BUILTIN_READ_SILENT) {
 			tty.c_lflag &= ~(ECHO | ECHOK | ECHONL);
@@ -163,7 +170,7 @@ shell_builtin_read(void FAST_FUNC (*setvar)(const char *name, const char *val),
 		int timeout;
 
 		if ((bufpos & 0xff) == 0)
-			buffer = xrealloc(buffer, bufpos + 0x100);
+			buffer = xrealloc(buffer, bufpos + 0x101);
 
 		timeout = -1;
 		if (end_ms) {
