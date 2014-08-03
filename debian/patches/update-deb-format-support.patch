@@ -8,7 +8,16 @@ Author: Guillem Jover <guillem@debian.org>
 Origin: vendor
 Forwarded: no
 Last-Update: 2014-07-30
-
+Bug-Debian: http://bugs.debian.org/756462
+---
+ archival/dpkg.c                                   |   12 ++++++++++--
+ archival/dpkg_deb.c                               |    6 ++++++
+ archival/libarchive/Kbuild.src                    |    1 +
+ archival/libarchive/filter_accept_list_reassign.c |   11 +++++++++++
+ archival/libarchive/get_header_tar_xz.c           |   21 +++++++++++++++++++++
+ include/bb_archive.h                              |    1 +
+ 6 files changed, 50 insertions(+), 2 deletions(-)
+ create mode 100644 archival/libarchive/get_header_tar_xz.c
 
 diff --git a/archival/dpkg.c b/archival/dpkg.c
 index 2893cfc..71eae66 100644
@@ -149,3 +158,6 @@ index b82cfd8..a356f70 100644
  char get_header_tar_bz2(archive_handle_t *archive_handle) FAST_FUNC;
  char get_header_tar_lzma(archive_handle_t *archive_handle) FAST_FUNC;
  
+-- 
+1.7.10.4
+

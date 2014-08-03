@@ -1,3 +1,28 @@
+busybox (1:1.22.0-8) UNRELEASED; urgency=medium
+
+  * iproute-support-onelink-route-option-and-print-route-flags.patch
+  * udhcpc default script improvements:
+    - set interface up in deconfig, which allows udhcpc to operate on
+      initially down interface
+    - set mtu if given
+    - always use $subnet (it is always set)
+    - use (linux-specific) ip applet (since udhcpc is linux-specific anyway)
+    - only process one default route, since linux ignores all but the first
+    - only change default route if differ from actual
+    - special-case for /32 subnets, add host route to the router IP
+      (used heavily in clouds and other thin provisioning environments)
+      (partially Closes: #652573, for udhcpc)
+    - flush routes in deconfig too
+    - log messages to syslog
+    - various minor cleanups
+  * busybox-udeb: use ip route onlink in udhcpc script to handle /32 subnets
+    (Closes: #652573)
+  * update-deb-format-support.patch: patch from Guillem Jover to support
+    xz format in busybox dpkg (enabled only in busybox-static)
+    (Closes: #756462)
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Fri, 18 Jul 2014 15:24:50 +0400
+
 busybox (1:1.22.0-7) unstable; urgency=low
 
   * Team upload
