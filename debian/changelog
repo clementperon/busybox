@@ -1,5 +1,8 @@
-busybox (1:1.22.0-8) UNRELEASED; urgency=medium
+busybox (1:1.22.0-8) unstable; urgency=medium
 
+  * Team upload
+
+  [ Michael Tokarev ]
   * iproute-support-onelink-route-option-and-print-route-flags.patch
   * udhcpc default script improvements:
     - set interface up in deconfig, which allows udhcpc to operate on
@@ -19,9 +22,9 @@ busybox (1:1.22.0-8) UNRELEASED; urgency=medium
     (Closes: #652573)
   * update-deb-format-support.patch: patch from Guillem Jover to support
     xz format in busybox dpkg (enabled only in busybox-static)
-    (Closes: #756462)
+    (same patch than the one in -7 but named differently)
 
- -- Michael Tokarev <mjt@tls.msk.ru>  Fri, 18 Jul 2014 15:24:50 +0400
+ -- Christian Perrier <bubulle@debian.org>  Sun, 03 Aug 2014 12:38:57 +0200
 
 busybox (1:1.22.0-7) unstable; urgency=low
 
