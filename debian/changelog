@@ -1,3 +1,9 @@
+busybox (1:1.22.0-9) UNRELEASED; urgency=medium
+
+  * cherry-pick find /BITS patch from upstream (Closes: #760637)
+
+ -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 09 Sep 2014 10:51:44 +0400
+
 busybox (1:1.22.0-8) unstable; urgency=medium
 
   * Team upload

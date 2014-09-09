@@ -10,6 +10,9 @@ zcat:-complain-if-input-is-not-compressed.diff
 # submitted fixes
 do-not-fail-on-missing-SIGPWR.patch
 
+# cherry-pick from upstream
+find:-support-perm-_BITS.diff
+
 shell-ash-export-HOME.patch
 version.patch
 init-console.patch
