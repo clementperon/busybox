@@ -6,6 +6,7 @@ busybox (1:1.22.0-9) UNRELEASED; urgency=medium
     {linux-kernel,system}-log-daemon in there (Closes: #730059)
   * test for /run/systemd/system in busybox-klogd initscript and exit
     if present, to not conflict with systemd klogd functions
+  * do not pass extra params to dh_installinit (using dep-based ordering)
 
  -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 09 Sep 2014 10:51:44 +0400
 
