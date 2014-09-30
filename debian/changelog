@@ -1,4 +1,4 @@
-busybox (1:1.22.0-9) UNRELEASED; urgency=medium
+busybox (1:1.22.0-9) unstable; urgency=medium
 
   * cherry-pick find /BITS patch from upstream (Closes: #760637)
   * clean-up provides/replaces/conflicts of busybox-syslogd from referencs
@@ -8,7 +8,7 @@ busybox (1:1.22.0-9) UNRELEASED; urgency=medium
     if present, to not conflict with systemd klogd functions
   * do not pass extra params to dh_installinit (using dep-based ordering)
 
- -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 09 Sep 2014 10:51:44 +0400
+ -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 30 Sep 2014 08:50:20 +0400
 
 busybox (1:1.22.0-8) unstable; urgency=medium
 
