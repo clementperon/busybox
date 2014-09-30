@@ -4,6 +4,8 @@ busybox (1:1.22.0-9) UNRELEASED; urgency=medium
   * clean-up provides/replaces/conflicts of busybox-syslogd from referencs
     to klogd/sysklogd/inetutils-syslogd, only keep virtual packages
     {linux-kernel,system}-log-daemon in there (Closes: #730059)
+  * test for /run/systemd/system in busybox-klogd initscript and exit
+    if present, to not conflict with systemd klogd functions
 
  -- Michael Tokarev <mjt@tls.msk.ru>  Tue, 09 Sep 2014 10:51:44 +0400
 
