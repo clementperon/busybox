@@ -171,6 +171,13 @@ endif
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
+
+# after shlibdeps finished, grab ${shlibs:Depends} from busybox package
+# and transform it into Built-Using field.
+	pkgs=$$(sed -n -e's/([^)]*)//g' -e's/^shlibs:Depends=//p' debian/busybox.substvars); \
+	srcs="$$(dpkg-query -f '$${source:Package} (= $${source:Version}), ' -W $$pkgs)"; \
+	echo "built-using=$$srcs" >> debian/busybox-static.substvars
+
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
