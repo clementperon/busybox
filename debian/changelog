@@ -3,6 +3,10 @@ busybox (1:1.22.0-10) UNRELEASED; urgency=low
   * lzop-add-overflow-check-CVE-2014-4607.patch (Closes: #768945)
   * add Built-Using control field for -static, deriving it from
     regular build (this will be glibc) (Closes: #768926)
+  * install only arch/indep deb as requested by binary-arch or binary-indep
+    target.  This fixes a long-standing lintian error, when package build
+    alway produces busybox-syslogd package which is arch:all and should not
+    be built on a buildd.
 
  -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 10 Nov 2014 13:59:25 +0300
 
