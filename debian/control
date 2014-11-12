@@ -5,7 +5,9 @@ Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Bastian Blank <waldi@debian.org>, Michael Tokarev <mjt@tls.msk.ru>
 Build-Depends: debhelper (>= 9),
 # needs for testsuite to run
-  zip
+  zip,
+# glibc static-nss bug #754813, use libc-bin since -dev name is arch-dependent
+ libc-bin (>> 2.19-12~) | libc-bin (<< 2.19),
 Standards-Version: 3.9.5
 Vcs-Git: git://anonscm.debian.org/d-i/busybox.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=d-i/busybox.git
