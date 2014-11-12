@@ -41,11 +41,24 @@ EXTRA_CFLAGS = \
 EXTRA_LDFLAGS = $(shell dpkg-buildflags --get LDFLAGS)
 EXTRA_CPPFLAGS = $(shell dpkg-buildflags --get CPPFLAGS)
 
+${b}/test754813.stamp:
+	mkdir -p ${b}
+	@echo "Checking if libc can produce working static binaries"
+	echo 'int main(void) { return getpwnam("root") ? 0 : 1; }' > ${b}/test754813.c
+	${CC} -static -o ${b}/test754813 ${b}/test754813.c
+	@${b}/test754813 || { \
+	  echo "E: your libc does not produce working statically linked binaries" >&2 ; \
+	  echo "E: glibc-2.19 is known to have this bug: http://bugs.debian.org/754813" >&2 ; \
+	  echo "E: and https://sourceware.org/bugzilla/show_bug.cgi?id=17250" >&2 ; \
+	  echo "E: please update your libc" >&2 ; \
+	  exit 1 ; }
+	touch $@
+
 build: build-arch build-indep
 build-indep:
 
 ${b}/%/.stamp-setup: DIR = ${b}/$*
-${b}/%/.stamp-setup: debian/config/pkg/% debian/config/os/${DEB_HOST_ARCH_OS}
+${b}/%/.stamp-setup: debian/config/pkg/% debian/config/os/${DEB_HOST_ARCH_OS} ${b}/test754813.stamp
 	dh_testdir
 	rm -rf ${DIR}
 	mkdir -p ${DIR}
