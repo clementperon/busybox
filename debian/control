@@ -5,13 +5,10 @@ Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Bastian Blank <waldi@debian.org>, Michael Tokarev <mjt@tls.msk.ru>
 Build-Depends: debhelper (>= 9),
 # needs for testsuite to run
-  zip
-Build-Conflicts:
-# glibc static-nss #754813, 2.19..2.19-11, -12 is ok, all names of it
- libc6-dev (<< 2.19-12~) [linux-any],
- libc6.1-dev (<< 2.19-12~) [alpha ia64],
- libc0.1-dev (<< 2.19-12~) [kfreebsd-any],
- libc0.3-dev (<< 2.19-12~) [hurd-any],
+  zip,
+# glibc static-nss #754813, 2.19..2.19-11, -12 is ok. Depend on libc-dev-bin
+# as it is the package which is named the same on all architectures
+ libc-dev-bin (>> 2.19-12~) | libc-dev-bin (<< 2.19),
 Standards-Version: 3.9.5
 Vcs-Git: git://anonscm.debian.org/d-i/busybox.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=d-i/busybox.git
