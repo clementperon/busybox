@@ -1,3 +1,10 @@
+busybox (1:1.22.0-9+deb8u1) jessie; urgency=medium
+
+  * Non-maintainer upload.
+  * lzop-add-overflow-check-CVE-2014-4607.patch (Closes: #768945)
+
+ -- Mehdi Dogguy <mehdi@debian.org>  Tue, 17 Feb 2015 18:29:33 +0100
+
 busybox (1:1.22.0-9) unstable; urgency=medium
 
   * cherry-pick find /BITS patch from upstream (Closes: #760637)
@@ -1692,4 +1699,3 @@ busybox (0.45-1) unstable; urgency=low
     (i.e. when libc gets screwed up.)
 
  -- Erik Andersen <andersee@debian.org>  Tue, 27 Jun 2000 12:26:41 -0600
-
