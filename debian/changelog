@@ -1,4 +1,10 @@
-busybox (1:1.22.0-14) medium; urgency=low
+busybox (1:1.22.0-15) UNRELEASED; urgency=medium
+
+  * lzop-add-overflow-check-CVE-2014-4607.patch (Closes: #768945)
+
+ -- Mehdi Dogguy <mehdi@debian.org>  Tue, 17 Feb 2015 18:29:33 +0100
+
+busybox (1:1.22.0-14) unstable; urgency=low
 
   * one more attempt to fix the glibc build-depend for #769190, now
     using versioned build-dependency on libc-dev-bin which is named
@@ -1735,4 +1741,3 @@ busybox (0.45-1) unstable; urgency=low
     (i.e. when libc gets screwed up.)
 
  -- Erik Andersen <andersee@debian.org>  Tue, 27 Jun 2000 12:26:41 -0600
-
