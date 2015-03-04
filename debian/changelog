@@ -1,3 +1,10 @@
+busybox (1:1.22.0-15) UNRELEASED; urgency=medium
+
+  [ Michael Gilbert ]
+  * Fix CVE-2014-9645: modprobe accepts paths as modules (closes: #776186).
+
+ -- Cyril Brulebois <kibi@debian.org>  Wed, 04 Mar 2015 15:59:23 +0100
+
 busybox (1:1.22.0-14) medium; urgency=low
 
   * one more attempt to fix the glibc build-depend for #769190, now
