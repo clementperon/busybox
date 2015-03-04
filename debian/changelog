@@ -1,8 +1,9 @@
-busybox (1:1.22.0-15) UNRELEASED; urgency=medium
+busybox (1:1.22.0-15) unstable; urgency=medium
 
+  [ Mehdi Dogguy ]
   * lzop-add-overflow-check-CVE-2014-4607.patch (Closes: #768945)
 
- -- Mehdi Dogguy <mehdi@debian.org>  Tue, 17 Feb 2015 18:29:33 +0100
+ -- Michael Tokarev <mjt@tls.msk.ru>  Wed, 04 Mar 2015 18:53:37 +0300
 
 busybox (1:1.22.0-14) unstable; urgency=low
 
