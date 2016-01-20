@@ -13,8 +13,6 @@ esac
 
 BB_BIN=/bin/busybox
 
-[ -x $BB_BIN ] || exit 0
-
 [ n = "$BUSYBOX" ] && exit 0
 
 [ -r /usr/share/initramfs-tools/hook-functions ] || exit 0

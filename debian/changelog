@@ -1,3 +1,11 @@
+busybox (1:1.22.0-17) UNRELEASED; urgency=medium
+
+  * Completely take over busybox installation from initramfs-tools:
+    - Add conf hook defining BUSYBOXDIR
+    - Make main hook fail if /bin/busybox does not exist
+
+ -- Ben Hutchings <ben@decadent.org.uk>  Wed, 20 Jan 2016 20:33:04 +0000
+
 busybox (1:1.22.0-16) unstable; urgency=medium
 
   * Stop reading initramfs.conf in initramfs hook; this is redundant and can
