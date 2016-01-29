@@ -10,8 +10,8 @@ Build-Depends: debhelper (>= 9),
 # as it is the package which is named the same on all architectures
  libc-dev-bin (>> 2.19-12~) | libc-dev-bin (<< 2.19),
 Standards-Version: 3.9.5
-Vcs-Git: git://anonscm.debian.org/d-i/busybox.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=d-i/busybox.git
+Vcs-Git: https://anonscm.debian.org/git/d-i/busybox.git
+Vcs-Browser: https://anonscm.debian.org/cgit/d-i/busybox.git
 Homepage: http://www.busybox.net
 
 Package: busybox
