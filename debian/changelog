@@ -1,8 +1,10 @@
 busybox (1:1.22.0-19) unstable; urgency=medium
 
+  * busybox-udeb, udhcpc: Remove /udhcpc/usr/share/udhcpc/default.script,
+    erroneously included in version 1:1.22.0-18
   * Disable CONFIG_FEATURE_PREFER_APPLETS in standard build (Closes: #821307)
 
- -- Ben Hutchings <ben@decadent.org.uk>  Sun, 17 Apr 2016 15:55:00 +0100
+ -- Ben Hutchings <ben@decadent.org.uk>  Sun, 17 Apr 2016 16:37:24 +0100
 
 busybox (1:1.22.0-18) unstable; urgency=medium
 
