@@ -68,15 +68,23 @@ void FAST_FUNC parse_datestr(const char *date_str, struct tm *ptm)
 			/* else end != NUL and we error out */
 		}
 	} else
-	/* yyyy-mm-dd HH */
-	if (sscanf(date_str, "%u-%u-%u %u%c", &ptm->tm_year,
+	if (strchr(date_str, '-')
+	    /* Why strchr('-') check?
+	     * sscanf below will trash ptm->tm_year, this breaks
+	     * if parse_str is "10101010" (iow, "MMddhhmm" form)
+	     * because we destroy year. Do these sscanf
+	     * only if we saw a dash in parse_str.
+	     */
+		/* yyyy-mm-dd HH */
+	 && (sscanf(date_str, "%u-%u-%u %u%c", &ptm->tm_year,
 				&ptm->tm_mon, &ptm->tm_mday,
 				&ptm->tm_hour,
 				&end) >= 4
-	/* yyyy-mm-dd */
-	 || sscanf(date_str, "%u-%u-%u%c", &ptm->tm_year,
+		/* yyyy-mm-dd */
+	     || sscanf(date_str, "%u-%u-%u%c", &ptm->tm_year,
 				&ptm->tm_mon, &ptm->tm_mday,
 				&end) >= 3
+	    )
 	) {
 		ptm->tm_year -= 1900; /* Adjust years */
 		ptm->tm_mon -= 1; /* Adjust month from 1-12 to 0-11 */
@@ -178,6 +186,7 @@ void FAST_FUNC parse_datestr(const char *date_str, struct tm *ptm)
 		} else {
 			bb_error_msg_and_die(bb_msg_invalid_date, date_str);
 		}
+		ptm->tm_sec = 0; /* assume zero if [.SS] is not given */
 		if (end == '.') {
 			/* xxx.SS */
 			if (sscanf(strchr(date_str, '.') + 1, "%u%c",
