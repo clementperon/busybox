@@ -1,9 +1,9 @@
-From: Joey Hess <joeyh@debian.org>
 Subject: busybox sh sets but does not export PATH
-Bug: http://bugs.debian.org/329406
-Bug: http://bugs.debian.org/679377
-Forwarded: no
+From: Joey Hess <joeyh@debian.org>
 Date: Sun, 07 May 2006 14:47:16 -0700
+Bug-Debian: https://bugs.debian.org/329406
+Bug-Debian: https://bugs.debian.org/679377
+Forwarded: no
 
 This patch exports $PATH variable from busybox ash by default,
 even if no "export PATH" statement has been processed.  No
@@ -54,7 +54,7 @@ now, we will live with this simple and ugly forkaround.
 
 --- a/shell/ash.c
 +++ b/shell/ash.c
-@@ -1909,7 +1909,7 @@ static const struct {
+@@ -1955,7 +1955,7 @@
  	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAIL"      , changemail      },
  	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAILPATH"  , changemail      },
  #endif
@@ -65,7 +65,7 @@ now, we will live with this simple and ugly forkaround.
  	{ VSTRFIXED|VTEXTFIXED       , "PS4=+ "    , NULL            },
 --- a/include/libbb.h
 +++ b/include/libbb.h
-@@ -1735,7 +1735,7 @@ extern const char bb_path_wtmp_file[] AL
+@@ -1952,7 +1952,7 @@
  extern const char bb_busybox_exec_path[] ALIGN1;
  /* util-linux manpage says /sbin:/bin:/usr/sbin:/usr/bin,
   * but I want to save a few bytes here */
@@ -76,7 +76,7 @@ now, we will live with this simple and ugly forkaround.
  
 --- a/libbb/messages.c
 +++ b/libbb/messages.c
-@@ -39,7 +39,7 @@ const char bb_busybox_exec_path[] ALIGN1
+@@ -39,7 +39,7 @@
  const char bb_default_login_shell[] ALIGN1 = LIBBB_DEFAULT_LOGIN_SHELL;
  /* util-linux manpage says /sbin:/bin:/usr/sbin:/usr/bin,
   * but I want to save a few bytes here. Check libbb.h before changing! */

@@ -1,17 +1,12 @@
-# upstream stable patches
-
-# submitted fixes
-
-# cherry-pick from upstream
-
-shell-ash-export-HOME.patch
-version.patch
-init-console.patch
+# cherry-picked from upstream
 
 # The following patches will likely be merged soon
 u-mount-FreeBSD-support.patch
 swaponoff-FreeBSD-support.patch
 
+# other patches
 
+shell-ash-export-HOME.patch
+version.patch
+init-console.patch
 stop-checking-ancient-kernel-version.patch
-
