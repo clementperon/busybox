@@ -40,6 +40,12 @@ endif
 #   considerably, making it easier to fit on space constrained systems.
 CFLAGS := $(filter-out -Werror=format-security -O2, ${CFLAGS})
 
+# Avoid Kconfig outputting the timestamp into generated configuration files. We
+# use this to compare against the configuration files in debian/config/pkg for
+# builds on Linux so that we can detect upstream configuration changes (e.g.
+# added applets).
+export KCONFIG_NOTIMESTAMP=1
+
 %:
 	dh $@
 
@@ -86,7 +92,13 @@ endif
 	cat debian/config/pkg/$* >> ${DIR}/.config
 
 # 5, sort out the resulting mess using oldconfig Kbuild machinery
-	${MAKE} -C ${DIR} oldconfig
+	yes "" | ${MAKE} -C ${DIR} oldconfig
+
+# 6, on linux platform only, compare the re-generated config to the shipped
+# config in the package in order to catch new/changed upstream options.
+ifeq (linux,${DEB_HOST_ARCH_OS})
+	cmp debian/config/pkg/$* ${DIR}/.config
+endif
 
 	ln -s .config $@
 
