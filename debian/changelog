@@ -3,6 +3,9 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
   * New upstream release.
   * Run wrap-and-sort -st.
   * Update debian/control:
+    - Replace Uploaders with myself and Christoph Biedl. Many thanks to
+      Bastian Blank and Michael Tokarev for having maintained busybox for many
+      years prior.
     - Remove Build-Depends to avoid ancient broken libc-dev-bin.
     - Bump Build-Depends on debhelper to >= 10.
   * Rewrite debian/rules:
