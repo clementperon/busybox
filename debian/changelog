@@ -4,6 +4,8 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
   * Run wrap-and-sort -st.
   * Update debian/control:
     - Remove Build-Depends to avoid ancient broken libc-dev-bin.
+  * Update debian/rules:
+    - Remove test for ancient broken libc6 versions with static binaries.
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 
