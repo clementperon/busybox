@@ -6,6 +6,11 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
     - Remove Build-Depends to avoid ancient broken libc-dev-bin.
   * Update debian/rules:
     - Remove test for ancient broken libc6 versions with static binaries.
+  * Update busybox build configuration files for the new upstream release.
+    - The udeb configuration mostly hasn't changed, but enable fgrep,
+      blkdiscard, bzcat and lsscsi.
+    - The deb and static configurations have had upstream recommendations
+      enabled for new options.
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 
