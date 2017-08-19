@@ -4,6 +4,7 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
   * Run wrap-and-sort -st.
   * Update debian/control:
     - Remove Build-Depends to avoid ancient broken libc-dev-bin.
+    - Bump Build-Depends on debhelper to >= 10.
   * Rewrite debian/rules:
     - Simplify and use the dh sequencer.
     - Remove test for ancient broken libc6 versions with static binaries.
@@ -12,6 +13,7 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
       blkdiscard, bzcat and lsscsi.
     - The deb and static configurations have had upstream recommendations
       enabled for new options.
+  * Switch to debhelper compatibility level 10.
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 

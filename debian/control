@@ -3,7 +3,7 @@ Priority: optional
 Section: utils
 Maintainer: Debian Install System Team <debian-boot@lists.debian.org>
 Uploaders: Bastian Blank <waldi@debian.org>, Michael Tokarev <mjt@tls.msk.ru>
-Build-Depends: debhelper (>= 9), zip
+Build-Depends: debhelper (>= 10), zip
 Standards-Version: 3.9.5
 Vcs-Git: https://anonscm.debian.org/git/d-i/busybox.git
 Vcs-Browser: https://anonscm.debian.org/cgit/d-i/busybox.git
