@@ -22,6 +22,8 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
   * Switch to debhelper compatibility level 10.
   * Add Depends on lsb-base to busybox-syslogd and udhcpd.
   * Update debian/.gitignore.
+  * Update Standards-Version to 4.0.1:
+    - Disable tests that require networking.
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 
