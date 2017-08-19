@@ -1,3 +1,9 @@
+busybox (1:1.27.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+
+ -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
+
 busybox (1:1.22.0-19) unstable; urgency=medium
 
   * busybox-udeb, udhcpc: Remove /udhcpc/usr/share/udhcpc/default.script,
