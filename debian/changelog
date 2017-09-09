@@ -1,30 +1,38 @@
 busybox (1:1.27.2-1) UNRELEASED; urgency=medium
 
-  * New upstream release.
-  * Run wrap-and-sort -st.
-  * Update debian/control:
-    - Replace Uploaders with myself and Christoph Biedl. Many thanks to
-      Bastian Blank and Michael Tokarev for having maintained busybox for many
-      years prior.
-    - Remove Build-Depends to avoid ancient broken libc-dev-bin.
-    - Bump Build-Depends on debhelper to >= 10.
-  * Rewrite debian/rules:
-    - Simplify and use the dh sequencer.
-    - Remove test for ancient broken libc6 versions with static binaries.
-    - Strip -O2 from CFLAGS, falling back to -Os from the busybox
-      configuration.
-    - Abort the build if 'make oldconfig' changes the configuration at all.
-  * Update busybox build configuration files for the new upstream release.
-    - The udeb configuration mostly hasn't changed, but enable fgrep,
-      blkdiscard, bzcat and lsscsi.
-    - The deb and static configurations have had upstream recommendations
-      enabled for new options.
-  * Switch to debhelper compatibility level 10.
-  * Add Depends on lsb-base to busybox-syslogd and udhcpd.
-  * Update debian/.gitignore.
-  * Update Standards-Version to 4.0.1:
-    - Disable tests that require networking.
+  * New upstream release. This addresses:
+    - Segmentation fault when creating compressed tar files. (Closes: #812074)
+    - Pointer misuse unziping files. (Closes: #803097)
+    - Buffer overflow in the DHCP client [CVE-2016-2148]. (Closes: #818497)
+    - Integer overflow in the DHCP client [CVE-2016-2147]. (Closes: #818499)
+  * Postpone creation of symlinks with "suspicious" targets [CVE-2011-5325].
+    (Closes: #802702)
+  * Re-enable the test suite during build. (Closes: #794526)
   * udhcpc: correct a typo in /etc/udhcpc/default.script. (Closes: #873472)
+  * Debian packaging changes:
+    - Run wrap-and-sort -st.
+    - Update debian/control:
+      - Replace Uploaders with myself and Christoph Biedl. Many thanks to
+        Bastian Blank and Michael Tokarev for having maintained busybox for
+        many years prior.
+      - Remove Build-Depends to avoid ancient broken libc-dev-bin.
+      - Bump Build-Depends on debhelper to >= 10.
+    - Rewrite debian/rules:
+      - Simplify and use the dh sequencer.
+      - Remove test for ancient broken libc6 versions with static binaries.
+      - Strip -O2 from CFLAGS, falling back to -Os from the busybox
+        configuration.
+      - Abort the build if 'make oldconfig' changes the configuration at all.
+    - Update busybox build configuration files for the new upstream release.
+      - The udeb configuration mostly hasn't changed, but enable fgrep,
+        blkdiscard, bzcat and lsscsi.
+      - The deb and static configurations have had upstream recommendations
+        enabled for new options.
+    - Switch to debhelper compatibility level 10.
+    - Add Depends on lsb-base to busybox-syslogd and udhcpd.
+    - Update debian/.gitignore.
+    - Update Standards-Version to 4.0.1:
+      - Disable tests that require networking.
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 
