@@ -12,7 +12,7 @@ include /usr/share/dpkg/default.mk
 
 TESTSUITE_ENV = SKIP_KNOWN_BUGS=y VERBOSE=y
 # always run tests in UTF8 mode to verify unicode support
-TESTSUITE_ENV += LANG=C.UTF8
+TESTSUITE_ENV += LANG=C.UTF-8 LC_ALL=C.UTF-8
 TESTSUITE_ENV += SKIP_INTERNET_TESTS=y
 # Required for testsuite/taskset.tests
 TESTSUITE_ENV += SHELL='sh -e'
