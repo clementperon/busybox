@@ -24,6 +24,7 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
   * Update debian/.gitignore.
   * Update Standards-Version to 4.0.1:
     - Disable tests that require networking.
+  * udhcpc: correct a typo in /etc/udhcpc/default.script. (Closes: #873472)
 
  -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
 
