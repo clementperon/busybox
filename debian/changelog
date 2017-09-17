@@ -1,4 +1,4 @@
-busybox (1:1.27.2-1) UNRELEASED; urgency=medium
+busybox (1:1.27.2-1) unstable; urgency=medium
 
   * New upstream release. This addresses:
     - Segmentation fault when creating compressed tar files. (Closes: #812074)
@@ -34,7 +34,7 @@ busybox (1:1.27.2-1) UNRELEASED; urgency=medium
     - Update Standards-Version to 4.0.1:
       - Disable tests that require networking.
 
- -- Chris Boot <bootc@debian.org>  Sun, 27 Aug 2017 15:03:32 +0100
+ -- Chris Boot <bootc@debian.org>  Sun, 17 Sep 2017 17:59:31 +0100
 
 busybox (1:1.22.0-19) unstable; urgency=medium
 
