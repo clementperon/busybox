@@ -12,3 +12,4 @@ version.patch
 init-console.patch
 stop-checking-ancient-kernel-version.patch
 temp-deb-installer-hack.patch
+install-readlink-in-bin.patch

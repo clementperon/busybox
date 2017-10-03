@@ -3,6 +3,7 @@ busybox (1:1.27.2-2) UNRELEASED; urgency=medium
   * Trigger an initramfs rebuild on installation. (Closes: #549022)
   * Temporarily re-enable invalid variable names in the udeb flavour for
     debian-installer.
+  * Install the readlink binary in /bin. (Closes: #801850)
   * Debian packaging changes:
     - Update debian/control:
       - Update Standards-Version to 4.1.1.
