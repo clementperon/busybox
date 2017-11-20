@@ -6,6 +6,8 @@ busybox (1:1.27.2-2) UNRELEASED; urgency=medium
   * Install the readlink binary in /bin. (Closes: #801850)
   * Fix integer overflow in bzip2 decompresson [CVE-2017-15874].
     (Closes: #879732)
+  * Fix integer underflow in LZMA decompressor [CVE-2017-15874].
+    (Closes: #879732)
   * Debian packaging changes:
     - Update debian/control:
       - Update Standards-Version to 4.1.1.
