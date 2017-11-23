@@ -1,2 +1,2 @@
-version=3
-http://busybox.net/downloads/busybox-([\d\.]*)\.tar\.bz2
+version=4
+https://busybox.net/downloads/busybox-([\d\.]*)\.tar\.bz2
