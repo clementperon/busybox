@@ -11,3 +11,4 @@ shell-ash-export-HOME.patch
 version.patch
 init-console.patch
 stop-checking-ancient-kernel-version.patch
+temp-deb-installer-hack.patch
