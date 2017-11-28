@@ -9,6 +9,8 @@ busybox (1:1.30.1-1) UNRELEASED; urgency=medium
     * Check signatures on upstream tarballs:
       - d/watch: set opts=pgpsigurlmangle
       - d/upstream/signing-key.asc: import Denis Vlasenko's key
+    * d/changelog:
+      - Correct CVE reference in changelog entry for previous upload.
 
   [ Chris Boot ]
   * Refresh and rework patches:
@@ -34,7 +36,7 @@ busybox (1:1.27.2-2) unstable; urgency=medium
   * Temporarily re-enable invalid variable names in the udeb flavour for
     debian-installer.
   * Install the readlink binary in /bin. (Closes: #801850)
-  * Fix integer overflow in bzip2 decompresson [CVE-2017-15874].
+  * Fix integer overflow in bzip2 decompresson [CVE-2017-15873].
     (Closes: #879732)
   * Fix integer underflow in LZMA decompressor [CVE-2017-15874].
     (Closes: #879732)
