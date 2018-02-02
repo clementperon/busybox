@@ -7,7 +7,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
 
 --- a/util-linux/swaponoff.c
 +++ b/util-linux/swaponoff.c
-@@ -70,10 +70,8 @@
+@@ -76,10 +76,8 @@
  
  #include "libbb.h"
  #include "common_bufsiz.h"
@@ -17,9 +17,9 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
 -# include <sys/swap.h>
 -#endif
  
- #if ENABLE_FEATURE_MOUNT_LABEL
+ #if ENABLE_FEATURE_SWAPONOFF_LABEL
  # include "volume_id.h"
-@@ -150,7 +148,7 @@
+@@ -156,7 +154,7 @@
  	resolve_mount_spec(&device);
  
  	if (do_swapoff) {
@@ -28,7 +28,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  		/* Don't complain on OPT_ALL if not a swap device or if it doesn't exist */
  		quiet = (OPT_ALL && (errno == EINVAL || errno == ENOENT));
  	} else {
-@@ -164,7 +162,7 @@
+@@ -170,7 +168,7 @@
  					return 1;
  				}
  			}

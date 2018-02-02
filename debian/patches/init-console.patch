@@ -9,8 +9,8 @@ exist.
 
 --- a/init/init.c
 +++ b/init/init.c
-@@ -598,6 +598,8 @@
- 	for (a = init_action_list; a; a = a->next) {
+@@ -604,6 +604,8 @@
+ 	for (a = G.init_action_list; a; a = a->next) {
  		if (!(a->action_type & action_type))
  			continue;
 +		if (a->terminal[0] && access(a->terminal, R_OK | W_OK))

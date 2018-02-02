@@ -6,7 +6,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
 
 --- a/util-linux/mount.c
 +++ b/util-linux/mount.c
-@@ -118,7 +118,7 @@
+@@ -115,7 +115,7 @@
   * Therefore we use BB_SUID_MAYBE instead of BB_SUID_REQUIRE: */
  //applet:IF_MOUNT(APPLET(mount, BB_DIR_BIN, IF_DESKTOP(BB_SUID_MAYBE) IF_NOT_DESKTOP(BB_SUID_DROP)))
  
@@ -15,7 +15,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  
  //usage:#define mount_trivial_usage
  //usage:       "[OPTIONS] [-o OPT] DEVICE NODE"
-@@ -188,50 +188,13 @@
+@@ -185,50 +185,13 @@
  #include <mntent.h>
  #include <syslog.h>
  #include <sys/mount.h>
@@ -67,7 +67,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  #if ENABLE_FEATURE_MOUNT_LABEL
  # include "volume_id.h"
  #else
-@@ -532,7 +495,7 @@
+@@ -529,7 +492,7 @@
  	int rc;
  
  	errno = 0;
@@ -76,7 +76,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  	if (verbose >= 2)
  		bb_perror_msg("mount('%s','%s','%s',0x%08lx,'%s'):%d",
  			source, target, filesystemtype,
-@@ -540,7 +503,7 @@
+@@ -537,7 +500,7 @@
  	return rc;
  }
  #else
@@ -87,16 +87,16 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  // Append mount options to string
 --- a/util-linux/umount.c
 +++ b/util-linux/umount.c
-@@ -26,7 +26,7 @@
- 
- //applet:IF_UMOUNT(APPLET(umount, BB_DIR_BIN, BB_SUID_DROP))
+@@ -39,7 +39,7 @@
+  * bb_common_bufsiz1 usage here is safe wrt NOEXEC: not expecting it to be zeroed.
+  */
  
 -//kbuild:lib-$(CONFIG_UMOUNT) += umount.o
 +//kbuild:lib-$(CONFIG_UMOUNT) += umount.o xmount.o
  
  //usage:#define umount_trivial_usage
  //usage:       "[OPTIONS] FILESYSTEM|DIRECTORY"
-@@ -49,7 +49,7 @@
+@@ -62,7 +62,7 @@
  //usage:       "$ umount /dev/hdc1\n"
  
  #include <mntent.h>
@@ -105,7 +105,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  #ifndef MNT_DETACH
  # define MNT_DETACH 0x00000002
  #endif
-@@ -172,12 +172,12 @@
+@@ -185,12 +185,12 @@
  // We do pass both flags in this case)
  #if 0
  		// Let's ask the thing nicely to unmount.
@@ -120,7 +120,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  
  		// If still can't umount, maybe remount read-only?
  		if (curstat) {
-@@ -185,7 +185,7 @@
+@@ -198,7 +198,7 @@
  				// Note! Even if we succeed here, later we should not
  				// free loop device or erase mtab entry!
  				const char *msg = "%s busy - remounted read-only";
@@ -318,5 +318,5 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  	depends on MOUNT || UMOUNT
 +	select PLATFORM_LINUX
  	help
- 	  Enabling this feature allows automatic mounting of files (containing
- 	  filesystem images) via the linux kernel's loopback devices.
+ 	Enabling this feature allows automatic mounting of files (containing
+ 	filesystem images) via the linux kernel's loopback devices.
