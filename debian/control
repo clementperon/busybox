@@ -7,8 +7,8 @@ Uploaders:
  Christoph Biedl <debian.axhn@manchmal.in-ulm.de>,
 Build-Depends: debhelper (>= 10), zip
 Standards-Version: 4.1.1
-Vcs-Git: https://anonscm.debian.org/git/d-i/busybox.git
-Vcs-Browser: https://anonscm.debian.org/cgit/d-i/busybox.git
+Vcs-Git: https://salsa.debian.org/installer-team/busybox.git
+Vcs-Browser: https://salsa.debian.org/installer-team/busybox
 Homepage: http://www.busybox.net
 
 Package: busybox
