@@ -152,11 +152,13 @@ class Main(object):
         out = os.path.join("../orig", self.orig_tar)
         try:
             os.mkdir("../orig")
-        except OSError: pass
+        except OSError:
+            pass
         try:
             os.stat(out)
             raise RuntimeError("Destination already exists")
-        except OSError: pass
+        except OSError:
+            pass
         self.log("Generate tarball %s\n" % out)
         cmdline = ['tar -czf', out, '-C', self.dir, self.orig]
         try:
