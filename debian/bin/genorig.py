@@ -50,7 +50,8 @@ class Changelog(list):
                 if not len(self):
                     raise
                 v = Version(match.group('version'))
-            self.append(self.Entry(match.group('distribution'), match.group('source'), v))
+            self.append(self.Entry(match.group(
+                'distribution'), match.group('source'), v))
 
 
 class Version(object):
@@ -112,7 +113,8 @@ class Main(object):
         if override_version:
             version = Version('%s-undef' % override_version)
 
-        self.log('Using source name %s, version %s\n' % (source, version.upstream))
+        self.log('Using source name %s, version %s\n' %
+                 (source, version.upstream))
 
         self.orig = '%s-%s' % (source, version.upstream)
         self.orig_tar = '%s_%s.orig.tar.gz' % (source, version.upstream)
@@ -129,7 +131,8 @@ class Main(object):
 
     def upstream(self):
         self.log("Extracting tarball %s\n" % self.input_tar)
-        match = re.match(r'(^|.*/).*\.(?P<extension>(tar\.(bz2|gz)|tbz2|tgz))?$', self.input_tar)
+        match = re.match(
+            r'(^|.*/).*\.(?P<extension>(tar\.(bz2|gz)|tbz2|tgz))?$', self.input_tar)
         if not match:
             raise RuntimeError("Can't identify name of tarball")
         cmdline = ['tar -xf', self.input_tar, '-C', self.dir]
@@ -171,6 +174,7 @@ class Main(object):
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage="%prog [OPTION]... TAR [PATCH]")
-    parser.add_option("-v", "--version", dest="version", help="Override version", metavar="VERSION")
+    parser.add_option("-v", "--version", dest="version",
+                      help="Override version", metavar="VERSION")
     options, args = parser.parse_args()
     Main(args[0], options.version)()
