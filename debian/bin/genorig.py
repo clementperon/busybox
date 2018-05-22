@@ -2,6 +2,7 @@
 
 import os, os.path, re, shutil, sys
 
+
 class Changelog(list):
     _rules = r"""
 ^
@@ -47,6 +48,7 @@ class Changelog(list):
                 v = Version(match.group('version'))
             self.append(self.Entry(match.group('distribution'), match.group('source'), v))
 
+
 class Version(object):
     _version_rules = ur"""
 ^
@@ -91,6 +93,7 @@ $
         if self.revision is not None:
             return "%s-%s" % (self.upstream, self.revision)
         return self.upstream
+
 
 class Main(object):
     def __init__(self, input_tar, override_version):
