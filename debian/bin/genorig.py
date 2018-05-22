@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-import os, os.path, re, shutil, sys
+import os
+import os.path
+import re
+import shutil
+import sys
 
 
 class Changelog(list):
