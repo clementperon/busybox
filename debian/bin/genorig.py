@@ -28,7 +28,7 @@ class Changelog(list):
         def __init__(self, distribution, source, version):
             self.distribution, self.source, self.version = distribution, source, version
 
-    def __init__(self, dir = '', version = None):
+    def __init__(self, dir='', version=None):
         if version is None:
             version = Version
         f = file(os.path.join(dir, "debian/changelog"))
@@ -112,7 +112,7 @@ class Main(object):
 
     def __call__(self):
         import tempfile
-        self.dir = tempfile.mkdtemp(prefix = 'genorig', dir = 'debian')
+        self.dir = tempfile.mkdtemp(prefix='genorig', dir='debian')
         try:
             self.upstream()
             self.remove()
@@ -162,7 +162,7 @@ class Main(object):
 
 if __name__ == '__main__':
     from optparse import OptionParser
-    parser = OptionParser(usage = "%prog [OPTION]... TAR [PATCH]")
-    parser.add_option("-v", "--version", dest = "version", help = "Override version", metavar = "VERSION")
+    parser = OptionParser(usage="%prog [OPTION]... TAR [PATCH]")
+    parser.add_option("-v", "--version", dest="version", help="Override version", metavar="VERSION")
     options, args = parser.parse_args()
     Main(args[0], options.version)()
