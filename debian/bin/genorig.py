@@ -163,6 +163,7 @@ class Main(object):
                 pass
             raise
 
+
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(usage="%prog [OPTION]... TAR [PATCH]")
