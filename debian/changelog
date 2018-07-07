@@ -12,6 +12,8 @@ busybox (1:1.30.1-1) UNRELEASED; urgency=medium
     * d/changelog:
       - Correct CVE reference in changelog entry for previous upload.
       - Remove trailing whitespace.
+    * d/rules:
+      - Remove trailing whitespace.
 
   [ Chris Boot ]
   * Refresh and rework patches:
