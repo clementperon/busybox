@@ -8,6 +8,11 @@ busybox (1:1.27.2-3) UNRELEASED; urgency=medium
 
   [ Ben Hutchings ]
   * Stop overriding stack alignment on i386 (Closes: #886506)
+  * Apply security fixes for wget from upstream:
+    - wget: more thorough sanitization of other side's data
+    - wget: check chunk length for overflowing off_t (CVE-2018-1000517)
+      (Closes: #902724)
+    - wget: handle URLs with @ or hash differently
 
  -- Cyril Brulebois <kibi@debian.org>  Fri, 27 Apr 2018 03:42:59 +0200
 

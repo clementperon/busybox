@@ -17,3 +17,6 @@ stop-checking-ancient-kernel-version.patch
 temp-deb-installer-hack.patch
 install-readlink-in-bin.patch
 stop-overriding-stack-alignment-on-i386.patch
+wget-more-thorough-sanitization-of-other-side-s-data.patch
+wget-check-chunk-length-for-overflowing-off_t.patch
+wget-handle-urls-with-or-hash-differently.patch
