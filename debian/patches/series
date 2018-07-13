@@ -16,3 +16,4 @@ init-console.patch
 stop-checking-ancient-kernel-version.patch
 temp-deb-installer-hack.patch
 install-readlink-in-bin.patch
+stop-overriding-stack-alignment-on-i386.patch

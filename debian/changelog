@@ -6,6 +6,9 @@ busybox (1:1.27.2-3) UNRELEASED; urgency=medium
   [ Chris Lamb ]
   * PEP8 fixes.
 
+  [ Ben Hutchings ]
+  * Stop overriding stack alignment on i386 (Closes: #886506)
+
  -- Cyril Brulebois <kibi@debian.org>  Fri, 27 Apr 2018 03:42:59 +0200
 
 busybox (1:1.27.2-2) unstable; urgency=medium
