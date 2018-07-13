@@ -1,4 +1,4 @@
-busybox (1:1.27.2-3) UNRELEASED; urgency=medium
+busybox (1:1.27.2-3) unstable; urgency=medium
 
   [ Cyril Brulebois ]
   * Update Vcs-{Browser,Git} to point to salsa (alioth's replacement).
@@ -14,7 +14,7 @@ busybox (1:1.27.2-3) UNRELEASED; urgency=medium
       (Closes: #902724)
     - wget: handle URLs with @ or hash differently
 
- -- Cyril Brulebois <kibi@debian.org>  Fri, 27 Apr 2018 03:42:59 +0200
+ -- Ben Hutchings <ben@decadent.org.uk>  Fri, 13 Jul 2018 04:19:08 +0100
 
 busybox (1:1.27.2-2) unstable; urgency=medium
 
