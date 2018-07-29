@@ -1,3 +1,9 @@
+busybox (1:1.27.2-4) UNRELEASED; urgency=medium
+
+  * Fix segfault in microcom (Closes: #896902)
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Sun, 29 Jul 2018 17:03:46 +0900
+
 busybox (1:1.27.2-3) unstable; urgency=medium
 
   [ Cyril Brulebois ]
