@@ -1,8 +1,10 @@
-busybox (1:1.27.2-4) UNRELEASED; urgency=medium
+busybox (1:1.30.1-1) UNRELEASED; urgency=medium
 
-  * Fix segfault in microcom (Closes: #896902)
+  [ Christoph Biedl ]
+  * New upstream version 1.30.1
+    Closes: #918846 [CVE-2018-20679]
 
- -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Sun, 29 Jul 2018 17:03:46 +0900
+ -- Christoph Biedl <debian.axhn@manchmal.in-ulm.de>  Fri, 01 Mar 2019 16:57:05 +0100
 
 busybox (1:1.27.2-3) unstable; urgency=medium
 
