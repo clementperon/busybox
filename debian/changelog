@@ -1,4 +1,4 @@
-busybox (1:1.30.1-1) UNRELEASED; urgency=medium
+busybox (1:1.30.1-1) unstable; urgency=high
 
   [ Christoph Biedl ]
   * New upstream version 1.30.1
@@ -35,7 +35,7 @@ busybox (1:1.30.1-1) UNRELEASED; urgency=medium
       - version.patch
   * Enable new applets for use by initramfs-tools: nuke, resume, run-init.
 
- -- Christoph Biedl <debian.axhn@manchmal.in-ulm.de>  Fri, 01 Mar 2019 16:57:05 +0100
+ -- Christoph Biedl <debian.axhn@manchmal.in-ulm.de>  Fri, 01 Mar 2019 21:19:43 +0100
 
 busybox (1:1.27.2-3) unstable; urgency=medium
 
