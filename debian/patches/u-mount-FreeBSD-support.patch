@@ -67,7 +67,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  #if ENABLE_FEATURE_MOUNT_LABEL
  # include "volume_id.h"
  #else
-@@ -529,7 +492,7 @@
+@@ -533,7 +496,7 @@
  	int rc;
  
  	errno = 0;
@@ -76,7 +76,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  	if (verbose >= 2)
  		bb_perror_msg("mount('%s','%s','%s',0x%08lx,'%s'):%d",
  			source, target, filesystemtype,
-@@ -537,7 +500,7 @@
+@@ -541,7 +504,7 @@
  	return rc;
  }
  #else
@@ -96,7 +96,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  
  //usage:#define umount_trivial_usage
  //usage:       "[OPTIONS] FILESYSTEM|DIRECTORY"
-@@ -62,7 +62,7 @@
+@@ -63,7 +63,7 @@
  //usage:       "$ umount /dev/hdc1\n"
  
  #include <mntent.h>
@@ -105,7 +105,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  #ifndef MNT_DETACH
  # define MNT_DETACH 0x00000002
  #endif
-@@ -185,12 +185,12 @@
+@@ -187,12 +187,12 @@
  // We do pass both flags in this case)
  #if 0
  		// Let's ask the thing nicely to unmount.
@@ -120,7 +120,7 @@ Signed-off-by: Jeremie Koenig <jk@jk.fr.eu.org>
  
  		// If still can't umount, maybe remount read-only?
  		if (curstat) {
-@@ -198,7 +198,7 @@
+@@ -200,7 +200,7 @@
  				// Note! Even if we succeed here, later we should not
  				// free loop device or erase mtab entry!
  				const char *msg = "%s busy - remounted read-only";

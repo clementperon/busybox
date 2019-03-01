@@ -17,7 +17,7 @@ is needed for all this code upstream.
 
 --- a/util-linux/mount.c
 +++ b/util-linux/mount.c
-@@ -410,9 +410,6 @@
+@@ -411,9 +411,6 @@
  
  
  struct globals {
@@ -27,7 +27,7 @@ is needed for all this code upstream.
  #if ENABLE_FEATURE_MOUNT_VERBOSE
  	unsigned verbose;
  #endif
-@@ -421,7 +418,7 @@
+@@ -422,7 +419,7 @@
  } FIX_ALIASING;
  enum { GETMNTENT_BUFSIZE = COMMON_BUFSIZE - offsetof(struct globals, getmntent_buf) };
  #define G (*(struct globals*)bb_common_bufsiz1)
@@ -36,7 +36,7 @@ is needed for all this code upstream.
  #if ENABLE_FEATURE_MOUNT_VERBOSE
  #define verbose           (G.verbose          )
  #else
-@@ -1071,6 +1068,7 @@
+@@ -1072,6 +1069,7 @@
  static void
  find_kernel_nfs_mount_version(void)
  {
@@ -44,7 +44,7 @@ is needed for all this code upstream.
  	int kernel_version;
  
  	if (nfs_mount_version)
-@@ -1084,6 +1082,7 @@
+@@ -1085,6 +1083,7 @@
  			nfs_mount_version = 3;
  		/* else v4 since 2.3.99pre4 */
  	}

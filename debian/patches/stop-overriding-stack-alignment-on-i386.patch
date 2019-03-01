@@ -30,11 +30,10 @@ For now, make busybox comply to the new ABI by removing the override.
 ---
 --- a/arch/i386/Makefile
 +++ b/arch/i386/Makefile
-@@ -2,6 +2,4 @@
- # Build system
- # ==========================================================================
- 
--# -mpreferred-stack-boundary=2 is essential in preventing gcc 4.2.x
--# from aligning stack to 16 bytes. (Which is gcc's way of supporting SSE).
--CFLAGS += $(call cc-option,-march=i386 -mpreferred-stack-boundary=2,)
+@@ -9,5 +9,5 @@
+ ifeq ($(CONFIG_STACK_OPTIMIZATION_386),y)
+ # -mpreferred-stack-boundary=2 is essential in preventing gcc 4.2.x
+ # from aligning stack to 16 bytes. (Which is gcc's way of supporting SSE).
+-CFLAGS += $(call cc-option,-mpreferred-stack-boundary=2,)
 +CFLAGS += -march=i386
+ endif
