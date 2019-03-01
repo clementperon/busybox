@@ -7,10 +7,10 @@
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
 //config:config MAKEMIME
-//config:	bool "makemime"
+//config:	bool "makemime (5.4 kb)"
 //config:	default y
 //config:	help
-//config:	  Create MIME-formatted messages.
+//config:	Create MIME-formatted messages.
 
 //applet:IF_MAKEMIME(APPLET(makemime, BB_DIR_BIN, BB_SUID_DROP))
 
@@ -234,7 +234,7 @@ int makemime_main(int argc UNUSED_PARAM, char **argv)
 			, G.opt_charset
 			, bb_get_last_path_component_strip(*argv)
 		);
-		encode_base64(*argv++, (const char *)stdin, "");
+		printfile_base64(*argv++);
 	}
 
 	// put multipart footer

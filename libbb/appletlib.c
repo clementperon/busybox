@@ -11,7 +11,6 @@
  *
  * Licensed under GPLv2 or later, see file LICENSE in this source tree.
  */
-
 /* We are trying to not use printf, this benefits the case when selected
  * applets are really simple. Example:
  *
@@ -34,7 +33,6 @@
 # include <malloc.h> /* for mallopt */
 #endif
 
-
 /* Declare <applet>_main() */
 #define PROTOTYPES
 #include "applets.h"
@@ -52,6 +50,16 @@
 
 #include "usage_compressed.h"
 
+#if ENABLE_FEATURE_SH_EMBEDDED_SCRIPTS
+# define DEFINE_SCRIPT_DATA 1
+# include "embedded_scripts.h"
+#else
+# define NUM_SCRIPTS 0
+#endif
+#if NUM_SCRIPTS > 0
+# include "bb_archive.h"
+static const char packed_scripts[] ALIGN1 = { PACKED_SCRIPTS };
+#endif
 
 /* "Do not compress usage text if uncompressed text is small
  *  and we don't include bunzip2 code for other reasons"
@@ -99,27 +107,8 @@ static const char usage_messages[] ALIGN1 = UNPACKED_USAGE;
 
 static const char packed_usage[] ALIGN1 = { PACKED_USAGE };
 # include "bb_archive.h"
-static const char *unpack_usage_messages(void)
-{
-	char *outbuf = NULL;
-	bunzip_data *bd;
-	int i;
-
-	i = start_bunzip(&bd,
-			/* src_fd: */ -1,
-			/* inbuf:  */ packed_usage,
-			/* len:    */ sizeof(packed_usage));
-	/* read_bunzip can longjmp to start_bunzip, and ultimately
-	 * end up here with i != 0 on read data errors! Not trivial */
-	if (!i) {
-		/* Cannot use xmalloc: will leak bd in NOFORK case! */
-		outbuf = malloc_or_warn(sizeof(UNPACKED_USAGE));
-		if (outbuf)
-			read_bunzip(bd, outbuf, sizeof(UNPACKED_USAGE));
-	}
-	dealloc_bunzip(bd);
-	return outbuf;
-}
+# define unpack_usage_messages() \
+	unpack_bz2_data(packed_usage, sizeof(packed_usage), sizeof(UNPACKED_USAGE))
 # define dealloc_usage_messages(s) free(s)
 
 #else
@@ -137,21 +126,23 @@ void FAST_FUNC bb_show_usage(void)
 		/* Imagine that this applet is "true". Dont suck in printf! */
 		const char *usage_string = unpack_usage_messages();
 
-		if (*usage_string == '\b') {
-			full_write2_str("No help available.\n\n");
-		} else {
-			full_write2_str("Usage: "SINGLE_APPLET_STR" ");
-			full_write2_str(usage_string);
-			full_write2_str("\n\n");
+		if (usage_string) {
+			if (*usage_string == '\b') {
+				full_write2_str("No help available.\n\n");
+			} else {
+				full_write2_str("Usage: "SINGLE_APPLET_STR" ");
+				full_write2_str(usage_string);
+				full_write2_str("\n\n");
+			}
+			if (ENABLE_FEATURE_CLEAN_UP)
+				dealloc_usage_messages((char*)usage_string);
 		}
-		if (ENABLE_FEATURE_CLEAN_UP)
-			dealloc_usage_messages((char*)usage_string);
 #else
 		const char *p;
 		const char *usage_string = p = unpack_usage_messages();
 		int ap = find_applet_by_name(applet_name);
 
-		if (ap < 0) /* never happens, paranoia */
+		if (ap < 0 || usage_string == NULL)
 			xfunc_die();
 		while (ap) {
 			while (*p++) continue;
@@ -164,8 +155,11 @@ void FAST_FUNC bb_show_usage(void)
 		else {
 			full_write2_str("\nUsage: ");
 			full_write2_str(applet_name);
-			full_write2_str(" ");
-			full_write2_str(p);
+			if (p[0]) {
+				if (p[0] != '\n')
+					full_write2_str(" ");
+				full_write2_str(p);
+			}
 			full_write2_str("\n");
 		}
 		if (ENABLE_FEATURE_CLEAN_UP)
@@ -681,8 +675,21 @@ static void check_suid(int applet_no)
 		if (geteuid())
 			bb_error_msg_and_die("must be suid to work properly");
 	} else if (APPLET_SUID(applet_no) == BB_SUID_DROP) {
-		xsetgid(rgid);  /* drop all privileges */
-		xsetuid(ruid);
+		/*
+		 * Drop all privileges.
+		 *
+		 * Don't check for errors: in normal use, they are impossible,
+		 * and in special cases, exiting is harmful. Example:
+		 * 'unshare --user' when user's shell is also from busybox.
+		 *
+		 * 'unshare --user' creates a new user namespace without any
+		 * uid mappings. Thus, busybox binary is setuid nobody:nogroup
+		 * within the namespace, as that is the only user. However,
+		 * since no uids are mapped, calls to setgid/setuid
+		 * fail (even though they would do nothing).
+		 */
+		setgid(rgid);
+		setuid(ruid);
 	}
 #  if ENABLE_FEATURE_SUID_CONFIG
  ret: ;
@@ -716,7 +723,7 @@ static void install_links(const char *busybox, int use_symbolic_links,
 	 * busybox.h::bb_install_loc_t, or else... */
 	int (*lf)(const char *, const char *);
 	char *fpc;
-        const char *appname = applet_names;
+	const char *appname = applet_names;
 	unsigned i;
 	int rc;
 
@@ -747,11 +754,70 @@ static void install_links(const char *busybox UNUSED_PARAM,
 }
 # endif
 
-# if ENABLE_BUSYBOX
 static void run_applet_and_exit(const char *name, char **argv) NORETURN;
 
-/* If we were called as "busybox..." */
-static int busybox_main(char **argv)
+# if NUM_SCRIPTS > 0
+static int find_script_by_name(const char *name)
+{
+	int i;
+	int applet = find_applet_by_name(name);
+
+	if (applet >= 0) {
+		for (i = 0; i < NUM_SCRIPTS; ++i)
+			if (applet_numbers[i] == applet)
+				return i;
+	}
+	return -1;
+}
+
+int scripted_main(int argc UNUSED_PARAM, char **argv)
+{
+	int script = find_script_by_name(applet_name);
+	if (script >= 0)
+#if ENABLE_ASH || ENABLE_SH_IS_ASH || ENABLE_BASH_IS_ASH
+		exit(ash_main(-script - 1, argv));
+#elif ENABLE_HUSH || ENABLE_SH_IS_HUSH || ENABLE_BASH_IS_HUSH
+		exit(hush_main(-script - 1, argv));
+#else
+		return 1;
+#endif
+	return 0;
+}
+
+char* FAST_FUNC
+get_script_content(unsigned n)
+{
+	char *t = unpack_bz2_data(packed_scripts, sizeof(packed_scripts),
+					UNPACKED_SCRIPTS_LENGTH);
+	if (t) {
+		while (n != 0) {
+			while (*t++ != '\0')
+				continue;
+			n--;
+		}
+	}
+	return t;
+}
+# endif /* NUM_SCRIPTS > 0 */
+
+# if ENABLE_BUSYBOX
+#  if ENABLE_FEATURE_SH_STANDALONE && ENABLE_FEATURE_TAB_COMPLETION
+    /*
+     * Insert "busybox" into applet table as well.
+     * This makes standalone shell tab-complete this name too.
+     * (Otherwise having "busybox" in applet table is not necessary,
+     * there is other code which routes "busyboxANY_SUFFIX" name
+     * to busybox_main()).
+     */
+//usage:#define busybox_trivial_usage NOUSAGE_STR
+//usage:#define busybox_full_usage ""
+//applet:IF_BUSYBOX(IF_FEATURE_SH_STANDALONE(IF_FEATURE_TAB_COMPLETION(APPLET(busybox, BB_DIR_BIN, BB_SUID_MAYBE))))
+int busybox_main(int argc, char *argv[]) MAIN_EXTERNALLY_VISIBLE;
+#  else
+#   define busybox_main(argc,argv) busybox_main(argv)
+static
+#  endif
+int busybox_main(int argc UNUSED_PARAM, char **argv)
 {
 	if (!argv[1]) {
 		/* Called without arguments */
@@ -771,6 +837,9 @@ static int busybox_main(char **argv)
 			"\n"
 			"Usage: busybox [function [arguments]...]\n"
 			"   or: busybox --list"IF_FEATURE_INSTALLER("[-full]")"\n"
+#  if ENABLE_FEATURE_SHOW_SCRIPT && NUM_SCRIPTS > 0
+			"   or: busybox --show SCRIPT\n"
+#  endif
 			IF_FEATURE_INSTALLER(
 			"   or: busybox --install [-s] [DIR]\n"
 			)
@@ -793,9 +862,9 @@ static int busybox_main(char **argv)
 			"Currently defined functions:\n"
 		);
 		col = 0;
-		a = applet_names;
 		/* prevent last comma to be in the very last pos */
 		output_width--;
+		a = applet_names;
 		while (*a) {
 			int len2 = strlen(a) + 2;
 			if (col >= (int)output_width - len2) {
@@ -815,6 +884,19 @@ static int busybox_main(char **argv)
 		full_write2_str("\n");
 		return 0;
 	}
+
+#  if ENABLE_FEATURE_SHOW_SCRIPT && NUM_SCRIPTS > 0
+	if (strcmp(argv[1], "--show") == 0) {
+		int n;
+		if (!argv[2])
+			bb_error_msg_and_die(bb_msg_requires_arg, "--show");
+		n = find_script_by_name(argv[2]);
+		if (n < 0)
+			bb_error_msg_and_die("script '%s' not found", argv[2]);
+		full_write1_str(get_script_content(n));
+		return 0;
+	}
+#  endif
 
 	if (is_prefixed_with(argv[1], "--list")) {
 		unsigned i = 0;
@@ -881,8 +963,6 @@ void FAST_FUNC run_applet_no_and_exit(int applet_no, const char *name, char **ar
 {
 	int argc = string_array_len(argv);
 
-	/* Reinit some shared global data */
-	xfunc_error_retval = EXIT_FAILURE;
 	/*
 	 * We do not use argv[0]: do not want to repeat massaging of
 	 * "-/sbin/halt" -> "halt", for example.
@@ -924,7 +1004,7 @@ static NORETURN void run_applet_and_exit(const char *name, char **argv)
 {
 #  if ENABLE_BUSYBOX
 	if (is_prefixed_with(name, "busybox"))
-		exit(busybox_main(argv));
+		exit(busybox_main(/*unused:*/ 0, argv));
 #  endif
 #  if NUM_APPLETS > 0
 	/* find_applet_by_name() search is more expensive, so goes second */
@@ -1028,6 +1108,16 @@ int main(int argc UNUSED_PARAM, char **argv)
 	if (applet_name[0] == '-')
 		applet_name++;
 	applet_name = bb_basename(applet_name);
+
+	/* If we are a result of execv("/proc/self/exe"), fix ugly comm of "exe" */
+	if (ENABLE_FEATURE_SH_STANDALONE
+	 || ENABLE_FEATURE_PREFER_APPLETS
+	 || !BB_MMU
+	) {
+		if (NUM_APPLETS > 1)
+			set_task_comm(applet_name);
+	}
+
 	parse_config_file(); /* ...maybe, if FEATURE_SUID_CONFIG */
 	run_applet_and_exit(applet_name, argv);
 

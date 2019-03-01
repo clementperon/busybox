@@ -12,8 +12,9 @@ makeopts="-j9"
 test -f include/applets.h || { echo "No include/applets.h file"; exit 1; }
 apps="`
 grep ^IF_ include/applets.h \
-| grep -v ^IF_FEATURE_ \
+| grep -v '^IF_FEATURE_' \
 | sed 's/IF_\([A-Z0-9._-]*\)(.*/\1/' \
+| grep -v '^BUSYBOX$' \
 | sort | uniq
 `"
 
@@ -26,6 +27,8 @@ allno="$cfg"
 for app in $apps; do
 	allno="`echo "$allno" | sed "s/^CONFIG_${app}=y\$/# CONFIG_${app} is not set/"`"
 done
+# remove "busybox" as well
+allno="`echo "$allno" | sed "s/^CONFIG_BUSYBOX=y\$/# CONFIG_BUSYBOX is not set/"`"
 #echo "$allno" >.config_allno
 
 trap 'test -f .config.SV && mv .config.SV .config && touch .config' EXIT

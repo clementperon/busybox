@@ -8,18 +8,18 @@
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
 //config:config MKE2FS
-//config:	bool "mke2fs"
+//config:	bool "mke2fs (10 kb)"
 //config:	default y
 //config:	select PLATFORM_LINUX
 //config:	help
-//config:	  Utility to create EXT2 filesystems.
+//config:	Utility to create EXT2 filesystems.
 //config:
 //config:config MKFS_EXT2
-//config:	bool "mkfs.ext2"
+//config:	bool "mkfs.ext2 (10 kb)"
 //config:	default y
 //config:	select PLATFORM_LINUX
 //config:	help
-//config:	  Alias to "mke2fs".
+//config:	Alias to "mke2fs".
 
 //                    APPLET_ODDNAME:name       main       location     suid_type     help
 //applet:IF_MKE2FS(   APPLET_ODDNAME(mke2fs,    mkfs_ext2, BB_DIR_SBIN, BB_SUID_DROP, mkfs_ext2))
@@ -77,23 +77,6 @@
 #define EXT2_HASH_HALF_MD4       1
 #define EXT2_FLAGS_SIGNED_HASH   0x0001
 #define EXT2_FLAGS_UNSIGNED_HASH 0x0002
-
-// storage helpers
-char BUG_wrong_field_size(void);
-#define STORE_LE(field, value) \
-do { \
-	if (sizeof(field) == 4) \
-		field = SWAP_LE32(value); \
-	else if (sizeof(field) == 2) \
-		field = SWAP_LE16(value); \
-	else if (sizeof(field) == 1) \
-		field = (value); \
-	else \
-		BUG_wrong_field_size(); \
-} while (0)
-
-#define FETCH_LE32(field) \
-	(sizeof(field) == 4 ? SWAP_LE32(field) : BUG_wrong_field_size())
 
 // All fields are little-endian
 struct ext2_dir {

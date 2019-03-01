@@ -12,6 +12,8 @@ COMMON_FILES:= \
 	data_extract_all.o \
 	data_extract_to_stdout.o \
 \
+	unsafe_symlink_target.o \
+\
 	filter_accept_all.o \
 	filter_accept_list.o \
 	filter_accept_reject_list.o \
@@ -89,6 +91,7 @@ lib-$(CONFIG_FEATURE_SEAMLESS_LZMA)     += open_transformer.o decompress_unlzma.
 lib-$(CONFIG_FEATURE_SEAMLESS_XZ)       += open_transformer.o decompress_unxz.o
 lib-$(CONFIG_FEATURE_COMPRESS_USAGE)    += open_transformer.o decompress_bunzip2.o
 lib-$(CONFIG_FEATURE_COMPRESS_BBCONFIG) += open_transformer.o decompress_bunzip2.o
+lib-$(CONFIG_FEATURE_SH_EMBEDDED_SCRIPTS) += open_transformer.o decompress_bunzip2.o
 
 ifneq ($(lib-y),)
 lib-y += $(COMMON_FILES)

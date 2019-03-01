@@ -87,7 +87,7 @@ gpt_print_wide36(uint16_t *s)
 	}
 	wc[i] = 0;
 	if (wcstombs(buf, wc, sizeof(buf)) <= sizeof(buf)-1)
-		fputs(printable_string(NULL, buf), stdout);
+		fputs(printable_string(buf), stdout);
 #else
 	char buf[37];
 	int i = 0;
@@ -177,7 +177,7 @@ check_gpt_label(void)
 
 	init_unicode();
 	if (!global_crc32_table) {
-		global_crc32_table = crc32_filltable(NULL, 0);
+		global_crc32_new_table_le();
 	}
 
 	crc = SWAP_LE32(gpt_hdr->hdr_crc32);

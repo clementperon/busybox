@@ -45,7 +45,7 @@
 #include "dhcpd.h"
 
 /* globals */
-struct dyn_lease *g_leases;
+#define g_leases ((struct dyn_lease*)ptr_to_globals)
 /* struct server_config_t server_config is in bb_common_bufsiz1 */
 
 /* Takes the address of the pointer to the static_leases linked list,
@@ -362,7 +362,10 @@ static int FAST_FUNC read_staticlease(const char *const_line, void *arg)
 }
 
 static int FAST_FUNC read_optset(const char *line, void *arg) {
-	return udhcp_str2optset(line, arg, dhcp_optflags, dhcp_option_strings);
+	return udhcp_str2optset(line, arg,
+			dhcp_optflags, dhcp_option_strings,
+			/*dhcpv6:*/ 0
+	);
 }
 
 struct config_keyword {
@@ -375,7 +378,7 @@ struct config_keyword {
 #define OFS(field) offsetof(struct server_config_t, field)
 
 static const struct config_keyword keywords[] = {
-	/* keyword        handler           variable address               default */
+	/* keyword        handler           variable address    default */
 	{"start"        , udhcp_str2nip   , OFS(start_ip     ), "192.168.0.20"},
 	{"end"          , udhcp_str2nip   , OFS(end_ip       ), "192.168.0.254"},
 	{"interface"    , read_str        , OFS(interface    ), "eth0"},
@@ -637,7 +640,7 @@ static void add_server_options(struct dhcp_packet *packet)
 static uint32_t select_lease_time(struct dhcp_packet *packet)
 {
 	uint32_t lease_time_sec = server_config.max_lease_sec;
-	uint8_t *lease_time_opt = udhcp_get_option(packet, DHCP_LEASE_TIME);
+	uint8_t *lease_time_opt = udhcp_get_option32(packet, DHCP_LEASE_TIME);
 	if (lease_time_opt) {
 		move_from_unaligned32(lease_time_sec, lease_time_opt);
 		lease_time_sec = ntohl(lease_time_sec);
@@ -814,11 +817,12 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 	IF_FEATURE_UDHCP_PORT(SERVER_PORT = 67;)
 	IF_FEATURE_UDHCP_PORT(CLIENT_PORT = 68;)
 
+	opt = getopt32(argv, "^"
+		"fSI:va:"IF_FEATURE_UDHCP_PORT("P:")
+		"\0"
 #if defined CONFIG_UDHCP_DEBUG && CONFIG_UDHCP_DEBUG >= 1
-	opt_complementary = "vv";
+		"vv"
 #endif
-	opt = getopt32(argv, "fSI:va:"
-		IF_FEATURE_UDHCP_PORT("P:")
 		, &str_I
 		, &str_a
 		IF_FEATURE_UDHCP_PORT(, &str_P)
@@ -850,11 +854,12 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 	/* Would rather not do read_config before daemonization -
 	 * otherwise NOMMU machines will parse config twice */
 	read_config(argv[0] ? argv[0] : DHCPD_CONF_FILE);
+	/* prevent poll timeout overflow */
+	if (server_config.auto_time > INT_MAX / 1000)
+		server_config.auto_time = INT_MAX / 1000;
 
 	/* Make sure fd 0,1,2 are open */
 	bb_sanitize_stdio();
-	/* Equivalent of doing a fflush after every \n */
-	setlinebuf(stdout);
 
 	/* Create pidfile */
 	write_pidfile(server_config.pidfile);
@@ -877,7 +882,9 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 		server_config.max_leases = num_ips;
 	}
 
-	g_leases = xzalloc(server_config.max_leases * sizeof(g_leases[0]));
+	/* this sets g_leases */
+	SET_PTR_TO_GLOBALS(xzalloc(server_config.max_leases * sizeof(g_leases[0])));
+
 	read_leases(server_config.lease_file);
 
 	if (udhcp_read_interface(server_config.interface,
@@ -911,21 +918,31 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 		}
 
 		udhcp_sp_fd_set(pfds, server_socket);
-		tv = timeout_end - monotonic_sec();
-		retval = 0;
-		if (!server_config.auto_time || tv > 0) {
-			retval = poll(pfds, 2, server_config.auto_time ? tv * 1000 : -1);
-		}
-		if (retval == 0) {
-			write_leases();
-			goto continue_with_autotime;
-		}
-		if (retval < 0 && errno != EINTR) {
-			log1("error on select");
-			continue;
+
+ new_tv:
+		tv = -1;
+		if (server_config.auto_time) {
+			tv = timeout_end - monotonic_sec();
+			if (tv <= 0) {
+ write_leases:
+				write_leases();
+				goto continue_with_autotime;
+			}
+			tv *= 1000;
 		}
 
-		switch (udhcp_sp_read(pfds)) {
+		/* Block here waiting for either signal or packet */
+		retval = poll(pfds, 2, tv);
+		if (retval <= 0) {
+			if (retval == 0)
+				goto write_leases;
+			if (errno == EINTR)
+				goto new_tv;
+			/* < 0 and not EINTR: should not happen */
+			bb_perror_msg_and_die("poll");
+		}
+
+		if (pfds[0].revents) switch (udhcp_sp_read()) {
 		case SIGUSR1:
 			bb_error_msg("received %s", "SIGUSR1");
 			write_leases();
@@ -935,17 +952,21 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 			bb_error_msg("received %s", "SIGTERM");
 			write_leases();
 			goto ret0;
-		case 0: /* no signal: read a packet */
-			break;
-		default: /* signal or error (probably EINTR): back to select */
-			continue;
 		}
 
+		/* Is it a packet? */
+		if (!pfds[1].revents)
+			continue; /* no */
+
+		/* Note: we do not block here, we block on poll() instead.
+		 * Blocking here would prevent SIGTERM from working:
+		 * socket read inside this call is restarted on caught signals.
+		 */
 		bytes = udhcp_recv_kernel_packet(&packet, server_socket);
 		if (bytes < 0) {
 			/* bytes can also be -2 ("bad packet data") */
 			if (bytes == -1 && errno != EINTR) {
-				log1("read error: %s, reopening socket", strerror(errno));
+				log1("read error: "STRERROR_FMT", reopening socket" STRERROR_ERRNO);
 				close(server_socket);
 				server_socket = -1;
 			}
@@ -966,7 +987,7 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 		}
 
 		/* Get SERVER_ID if present */
-		server_id_opt = udhcp_get_option(&packet, DHCP_SERVER_ID);
+		server_id_opt = udhcp_get_option32(&packet, DHCP_SERVER_ID);
 		if (server_id_opt) {
 			uint32_t server_id_network_order;
 			move_from_unaligned32(server_id_network_order, server_id_opt);
@@ -990,7 +1011,7 @@ int udhcpd_main(int argc UNUSED_PARAM, char **argv)
 		}
 
 		/* Get REQUESTED_IP if present */
-		requested_ip_opt = udhcp_get_option(&packet, DHCP_REQUESTED_IP);
+		requested_ip_opt = udhcp_get_option32(&packet, DHCP_REQUESTED_IP);
 		if (requested_ip_opt) {
 			move_from_unaligned32(requested_nip, requested_ip_opt);
 		}

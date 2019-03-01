@@ -7,10 +7,10 @@
  * Licensed under GPLv2, see file LICENSE in this source tree.
  */
 //config:config SENDMAIL
-//config:	bool "sendmail"
+//config:	bool "sendmail (14 kb)"
 //config:	default y
 //config:	help
-//config:	  Barebones sendmail.
+//config:	Barebones sendmail.
 
 //applet:IF_SENDMAIL(APPLET(sendmail, BB_DIR_USR_SBIN, BB_SUID_DROP))
 
@@ -36,7 +36,9 @@
 //usage:     "\n		openssl s_client -quiet -tls1 -connect smtp.gmail.com:465"
 //usage:     "\n			$SMTP_ANTISPAM_DELAY: seconds to wait after helper connect"
 //usage:     "\n	-S HOST[:PORT]	Server (default $SMTPHOST or 127.0.0.1)"
-//usage:     "\n	-amLOGIN	Log in using AUTH LOGIN (-amCRAM-MD5 not supported)"
+//usage:     "\n	-amLOGIN	Log in using AUTH LOGIN"
+//usage:     "\n	-amPLAIN	or AUTH PLAIN"
+//usage:     "\n			(-amCRAM-MD5 not supported)"
 //usage:     "\n	-auUSER		Username for AUTH"
 //usage:     "\n	-apPASS 	Password for AUTH"
 //usage:     "\n"
@@ -150,7 +152,13 @@ static char *sane_address(char *str)
 	trim(str);
 	s = str;
 	while (*s) {
-		if (!isalnum(*s) && !strchr("+_-.@", *s)) {
+		/* Standard allows these chars in username without quoting:
+		 * /!#$%&'*+-=?^_`{|}~
+		 * and allows dot (.) with some restrictions.
+		 * I chose to only allow a saner subset.
+		 * I propose to expand it only on user's request.
+		 */
+		if (!isalnum(*s) && !strchr("=+_-.@", *s)) {
 			bb_error_msg("bad address '%s'", str);
 			/* returning "": */
 			str[0] = '\0';
@@ -166,9 +174,8 @@ static char *angle_address(char *str)
 {
 	char *s, *e;
 
-	trim(str);
-	e = last_char_is(str, '>');
-	if (e) {
+	e = trim(str);
+	if (e != str && *--e == '>') {
 		s = strrchr(str, '<');
 		if (s) {
 			*e = '\0';
@@ -190,8 +197,9 @@ static void rcptto(const char *s)
 // send to a list of comma separated addresses
 static void rcptto_list(const char *list)
 {
-	char *str = xstrdup(list);
-	char *s = str;
+	char *free_me = xstrdup(list);
+	char *str = free_me;
+	char *s = free_me;
 	char prev = 0;
 	int in_quote = 0;
 
@@ -209,7 +217,7 @@ static void rcptto_list(const char *list)
 	}
 	if (prev != ',')
 		rcptto(angle_address(str));
-	free(str);
+	free(free_me);
 }
 
 int sendmail_main(int argc, char **argv) MAIN_EXTERNALLY_VISIBLE;
@@ -242,6 +250,8 @@ int sendmail_main(int argc UNUSED_PARAM, char **argv)
 		OPT_S = 1 << 6,         // specify connection string
 		OPT_a = 1 << 7,         // authentication tokens
 		OPT_v = 1 << 8,         // verbosity
+	//--- for -amMETHOD
+		OPT_am_plain = 1 << 9,  // AUTH PLAIN
 	};
 
 	// init global variables
@@ -257,13 +267,17 @@ int sendmail_main(int argc UNUSED_PARAM, char **argv)
 	G.fp0 = xfdopen_for_read(3);
 
 	// parse options
-	// -v is a counter, -H and -S are mutually exclusive, -a is a list
-	opt_complementary = "vv:H--S:S--H";
 	// N.B. since -H and -S are mutually exclusive they do not interfere in opt_connect
 	// -a is for ssmtp (http://downloads.openwrt.org/people/nico/man/man8/ssmtp.8.html) compatibility,
 	// it is still under development.
-	opts = getopt32(argv, "tf:o:iw:+H:S:a:*:v", &opt_from, NULL,
-			&timeout, &opt_connect, &opt_connect, &list, &verbose);
+	opts = getopt32(argv, "^"
+			"tf:o:iw:+H:S:a:*:v"
+			"\0"
+			// -v is a counter, -H and -S are mutually exclusive, -a is a list
+			"vv:H--S:S--H",
+			&opt_from, NULL,
+			&timeout, &opt_connect, &opt_connect, &list, &verbose
+	);
 	//argc -= optind;
 	argv += optind;
 
@@ -276,9 +290,14 @@ int sendmail_main(int argc UNUSED_PARAM, char **argv)
 			G.user = xstrdup(a+1);
 		if ('p' == a[0])
 			G.pass = xstrdup(a+1);
-		// N.B. we support only AUTH LOGIN so far
-		//if ('m' == a[0])
-		//	G.method = xstrdup(a+1);
+		if ('m' == a[0]) {
+			if ((a[1] | 0x20) == 'p') // PLAIN
+				opts |= OPT_am_plain;
+			else if ((a[1] | 0x20) == 'l') // LOGIN
+				; /* do nothing (this is the default) */
+			else
+				bb_error_msg_and_die("unsupported AUTH method %s", a+1);
+		}
 	}
 	// N.B. list == NULL here
 	//bb_error_msg("OPT[%x] AU[%s], AP[%s], AM[%s], ARGV[%s]", opts, au, ap, am, *argv);
@@ -338,13 +357,44 @@ int sendmail_main(int argc UNUSED_PARAM, char **argv)
 
 	// perform authentication
 	if (opts & OPT_a) {
-		smtp_check("AUTH LOGIN", 334);
-		// we must read credentials unless they are given via -a[up] options
+		// read credentials unless they are given via -a[up] options
 		if (!G.user || !G.pass)
 			get_cred_or_die(4);
-		encode_base64(NULL, G.user, NULL);
-		smtp_check("", 334);
-		encode_base64(NULL, G.pass, NULL);
+		if (opts & OPT_am_plain) {
+			// C: AUTH PLAIN
+			// S: 334
+			// C: base64encoded(auth<NUL>user<NUL>pass)
+			// S: 235 2.7.0 Authentication successful
+//Note: a shorter format is allowed:
+// C: AUTH PLAIN base64encoded(auth<NUL>user<NUL>pass)
+// S: 235 2.7.0 Authentication successful
+			smtp_check("AUTH PLAIN", 334);
+			{
+				unsigned user_len = strlen(G.user);
+				unsigned pass_len = strlen(G.pass);
+				unsigned sz = 1 + user_len + 1 + pass_len;
+				char plain_auth[sz + 1];
+				// the format is:
+				// "authorization identity<NUL>username<NUL>password"
+				// authorization identity is empty.
+				plain_auth[0] = '\0';
+				strcpy(stpcpy(plain_auth + 1, G.user) + 1, G.pass);
+				printbuf_base64(plain_auth, sz);
+			}
+		} else {
+			// C: AUTH LOGIN
+			// S: 334 VXNlcm5hbWU6
+			//        ^^^^^^^^^^^^ server says "Username:"
+			// C: base64encoded(user)
+			// S: 334 UGFzc3dvcmQ6
+			//        ^^^^^^^^^^^^ server says "Password:"
+			// C: base64encoded(pass)
+			// S: 235 2.7.0 Authentication successful
+			smtp_check("AUTH LOGIN", 334);
+			printstr_base64(G.user);
+			smtp_check("", 334);
+			printstr_base64(G.pass);
+		}
 		smtp_check("", 235);
 	}
 
