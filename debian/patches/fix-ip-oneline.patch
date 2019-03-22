@@ -1,0 +1,20 @@
+Subject: Restore output of "ip -online"
+Author: Dominik George <natureshadow@debian.org>
+Date: 2019-03-22
+Bug-Debian: https://bugs.debian.org/924374
+Forwarded: no
+
+--- a/networking/libiproute/ipaddress.c
++++ b/networking/libiproute/ipaddress.c
+@@ -570,10 +570,7 @@
+ 	}
+ 
+ 	for (l = linfo; l; l = l->next) {
+-		if (no_link
+-		 || (oneline || print_linkinfo(&l->h) == 0)
+-		/* ^^^^^^^^^ "ip -oneline a" does not print link info */
+-		) {
++		if (no_link  || print_linkinfo(&l->h) == 0) {
+ 			struct ifinfomsg *ifi = NLMSG_DATA(&l->h);
+ 			if (G_filter.family != AF_PACKET)
+ 				print_selected_addrinfo(ifi->ifi_index, ainfo);
