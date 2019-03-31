@@ -11,6 +11,5 @@ version.patch
 init-console.patch
 stop-checking-ancient-kernel-version.patch
 install-readlink-in-bin.patch
-stop-overriding-stack-alignment-on-i386.patch
 ignore-ip-valid_lft.patch
 fix-ip-oneline.patch
