@@ -2,6 +2,7 @@ busybox (1:1.30.1-4) UNRELEASED; urgency=medium
 
   * Drop "Stop overriding stack alignment on i386" as this behaviour is now
     configurable
+  * debian/rules: Enable verbose output (V=1) for "make oldconfig"
 
  -- Ben Hutchings <ben@decadent.org.uk>  Sun, 31 Mar 2019 23:23:58 +0100
 

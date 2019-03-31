@@ -92,7 +92,7 @@ endif
 	cat debian/config/pkg/$* >> ${DIR}/.config
 
 # 5, sort out the resulting mess using oldconfig Kbuild machinery
-	yes "" | ${MAKE} -C ${DIR} oldconfig
+	yes "" | ${MAKE} -C ${DIR} oldconfig V=1
 
 # 6, on linux platform only, compare the re-generated config to the shipped
 # config in the package in order to catch new/changed upstream options.
