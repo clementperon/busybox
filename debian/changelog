@@ -1,10 +1,15 @@
-busybox (1:1.30.1-4) UNRELEASED; urgency=medium
+busybox (1:1.30.1-4) unstable; urgency=high
 
+  [ Ben Hutchings ]
   * Drop "Stop overriding stack alignment on i386" as this behaviour is now
     configurable
   * debian/rules: Enable verbose output (V=1) for "make oldconfig"
 
- -- Ben Hutchings <ben@decadent.org.uk>  Sun, 31 Mar 2019 23:23:58 +0100
+  [ Cyril Brulebois ]
+  * Reinstate temp-deb-installer-hack.patch and FEATURE_DI_ENV_HACK=y
+    Closes: #925979
+
+ -- Christoph Biedl <debian.axhn@manchmal.in-ulm.de>  Mon, 01 Apr 2019 07:17:50 +0200
 
 busybox (1:1.30.1-3) unstable; urgency=high
 
