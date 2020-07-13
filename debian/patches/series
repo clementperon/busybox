@@ -1,6 +1,7 @@
 # cherry-picked from upstream
 cherry-pick.1_30_0-35-g74d9f1ba3.udhcpc-when-decoding-dhcp-subnet-ensure-it-is-4-bytes-long.patch
 cherry-pick.1_30_0-110-gbb3a9531b.ip-fix-ip-o-link.patch
+cherry-pick.1_31_0-92-gd3539be8f0.remove-stime-function-calls.patch
 
 # The following patches will likely be merged soon
 u-mount-FreeBSD-support.patch
