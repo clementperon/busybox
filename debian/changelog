@@ -1,15 +1,16 @@
-busybox (1:1.30.1-7) UNRELEASED; urgency=medium
+busybox (1:1.30.1-7) unstable; urgency=medium
 
   [ Debian Janitor ]
   * Remove constraints unnecessary since stretch:
     + busybox: Drop versioned constraint on initramfs-tools in Breaks.
 
   [ Aurelien Jarno ]
+  * Team upload.
   * Disable CONFIG_FEATURE_MOUNT_NFS. This option is to "Support mounting NFS
     file systems on Linux < 2.6.23", which are not supported anymore in
     Debian. It requires RPC support in glibc, which has just been removed.
 
- -- Debian Janitor <janitor@jelmer.uk>  Mon, 16 Nov 2020 08:02:04 -0000
+ -- Aurelien Jarno <aurel32@debian.org>  Sun, 22 Aug 2021 16:39:45 +0200
 
 busybox (1:1.30.1-6) unstable; urgency=medium
 
