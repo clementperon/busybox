@@ -1,3 +1,11 @@
+busybox (1:1.35.0-3) UNRELEASED; urgency=medium
+
+  [ Debian Janitor ]
+  * Apply multi-arch hints.
+    + udhcpc: Add Multi-Arch: same.
+
+ -- Philip Hands <phil@hands.com>  Fri, 02 Sep 2022 22:21:38 +0200
+
 busybox (1:1.35.0-2) unstable; urgency=medium
 
   * Team upload.
