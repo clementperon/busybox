@@ -3,6 +3,10 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
   [ Nobuhiro Iwamatsu ]
   * Enable stty applet in busybox-udeb. Closes: #891806
 
+  [ Diederik de Haas ]
+  * Enable CONFIG_FEATURE_TR_CLASSES and CONFIG_FEATURE_TR_EQUIV in deb
+    config. Closes: #998803
+
   [ Yuval Freund ]
   * Fix special case for /32 subnets. Closes: #891857
 
