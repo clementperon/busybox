@@ -14,6 +14,7 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
     - Rework version.patch: KBUILD_STR() has been dropped.
     - Temporarily drop kFreeBSD patches pending rework.
   * Update busybox configurations for new upstream version
+  * Add use-ash-echo-for-awk-tests.patch to work around a test failure.
 
  -- Chris Boot <bootc@debian.org>  Mon, 27 Dec 2021 13:01:37 +0000
 
