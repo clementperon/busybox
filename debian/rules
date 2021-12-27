@@ -10,7 +10,8 @@ include /usr/share/dpkg/default.mk
 
 ##############################################################################
 
-TESTSUITE_ENV = SKIP_KNOWN_BUGS=y VERBOSE=y
+TESTSUITE_ENV = SKIP_KNOWN_BUGS=y
+#TESTSUITE_ENV = VERBOSE=y
 # always run tests in UTF8 mode to verify unicode support
 TESTSUITE_ENV += LANG=C.UTF-8 LC_ALL=C.UTF-8
 TESTSUITE_ENV += SKIP_INTERNET_TESTS=y
@@ -139,7 +140,7 @@ ${b}/%/.stamp-test:
 		( cd ${DIR} && patch -p1 && touch .tests-fixed; ) \
 		  < debian/testsuite-${DEB_HOST_ARCH_OS}.diff ; \
 	fi
-	cd ${DIR}/testsuite && ${TESTSUITE_ENV} ./runtest -v
+	cd ${DIR}/testsuite && ${TESTSUITE_ENV} ./runtest
 	touch $@
 
 ##############################################################################
