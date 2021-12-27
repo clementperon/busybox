@@ -13,6 +13,7 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
     - Drop ignore-ip-valid_lft.patch: no longer needed.
     - Rework version.patch: KBUILD_STR() has been dropped.
     - Temporarily drop kFreeBSD patches pending rework.
+  * Update busybox configurations for new upstream version
 
  -- Chris Boot <bootc@debian.org>  Mon, 27 Dec 2021 13:01:37 +0000
 
