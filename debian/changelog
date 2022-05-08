@@ -27,6 +27,24 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
   * Add scripts-echo.c-fix-NUL-handling-in-abc-0-def.patch to work around a
     test failure.
 
+  [ Michael Tokarev ]
+  * d/control: add myself to upladers
+  * switch to debhelper-compat=13
+  * d/control: add ${misc:Pre-Depends} for packages with the startup scripts
+  * enable tr classes for static build to
+  * d/rules: stop filtering -Wformat-security from CFLAG, it is okay now
+  * d/rules: simplify the clean rule, omit dh in there
+  * d/rules: made build-% depending on config-%
+  * d/rules: steal build targets from dh which adds unnecessary indirection
+  * d/rules: only do install & binary targets with dh
+  * d/rules: set SHELL to sh -e to catch errors in shell fragments
+  * d/rules: add .NOTPARALLEL to run the top-level rules non-parallel
+    but allow submakes to run commands in parallel, to stop intermixing
+    output from different builds
+  * d/bysybox-static.lintian-overrides: add uses-dpkg-database-directly
+  * spelling.diff: two spelling fixes for the source
+  * d/changelog: strip trailing space
+
  -- Chris Boot <bootc@debian.org>  Mon, 27 Dec 2021 13:01:37 +0000
 
 busybox (1:1.30.1-7) unstable; urgency=medium
