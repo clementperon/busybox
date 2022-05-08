@@ -106,7 +106,7 @@ endif
 override_dh_auto_build: $(patsubst %,${b}/%/.stamp-build, ${flavours})
 
 ${b}/%/.stamp-build: DIR = ${b}/$*
-${b}/%/.stamp-build:
+${b}/%/.stamp-build: ${b}/%/.stamp-setup
 	dh_auto_build -- -C ${DIR} all \
 	  SKIP_STRIP=y \
 	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
