@@ -33,17 +33,11 @@ export CROSS_COMPILE = ${DEB_HOST_GNU_TYPE}-
 endif
 
 # We filter the following from CFLAGS:
-# -Werror=format-security
-#   because busybox uses constructs like
-#    bb_error_msg_and_die(bb_msg_memory_exhausted);
-#   in several places, and gcc complains because bb_msg_memory_exhausted is an
-#   extern.
-#
 # -O2
 #   to use the optimization setting from busybox's configuration and build
 #   system, causing it to use -Os. This reduces built binaries' size
 #   considerably, making it easier to fit on space constrained systems.
-CFLAGS := $(filter-out -Werror=format-security -O2, ${CFLAGS})
+CFLAGS := $(filter-out -O2, ${CFLAGS})
 
 # Avoid Kconfig outputting the timestamp into generated configuration files. We
 # use this to compare against the configuration files in debian/config/pkg for
