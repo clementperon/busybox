@@ -1,4 +1,5 @@
 #!/usr/bin/make -f
+SHELL = /bin/sh -e
 
 # in order to keep output non-intermixed together, disable parallel building
 # of different targets in this d/rules but allow running parallel submakes
