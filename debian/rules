@@ -50,7 +50,8 @@ export KCONFIG_NOTIMESTAMP=1
 
 ##############################################################################
 
-override_dh_auto_configure: $(patsubst %,${b}/%/.stamp-setup, ${flavours})
+configure: $(patsubst %,${b}/%/.stamp-setup, ${flavours})
+.PHONY: configure
 
 ${b}/%/.stamp-setup: DIR = ${b}/$*
 ${b}/%/.stamp-setup:
@@ -103,7 +104,10 @@ endif
 
 ##############################################################################
 
-override_dh_auto_build: $(patsubst %,${b}/%/.stamp-build, ${flavours})
+build-arch: $(patsubst %,${b}/%/.stamp-build, ${flavours})
+build: build-arch
+build-indep:
+.PHONY: build build-arch build-indep
 
 ${b}/%/.stamp-build: DIR = ${b}/$*
 ${b}/%/.stamp-build: ${b}/%/.stamp-setup
