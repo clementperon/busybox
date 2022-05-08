@@ -1,5 +1,9 @@
 #!/usr/bin/make -f
 
+# in order to keep output non-intermixed together, disable parallel building
+# of different targets in this d/rules but allow running parallel submakes
+.NOTPARALLEL:
+
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
