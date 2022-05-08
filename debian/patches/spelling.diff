@@ -1,0 +1,23 @@
+From: Michael Tokarev <mjt@tls.msk.ru>
+Date: Sun, 08 May 2022 21:38:38 +0300
+Subject: Spelling: recevied, delimeter
+
+diff --git a/coreutils/cut.c b/coreutils/cut.c
+index 7009e74cf..5295b727f 100644
+--- a/coreutils/cut.c
++++ b/coreutils/cut.c
+@@ -36,2 +36,2 @@
+-//usage:     "\n	-O SEP	Field delimeter for output (default = -d for -f, one space for -F)"
+-//usage:     "\n	-D	Don't sort/collate sections or match -fF lines without delimeter"
++//usage:     "\n	-O SEP	Field delimiter for output (default = -d for -f, one space for -F)"
++//usage:     "\n	-D	Don't sort/collate sections or match -fF lines without delimiter"
+diff --git a/networking/ping.c b/networking/ping.c
+index 86d8088de..9805695a1 100644
+--- a/networking/ping.c
++++ b/networking/ping.c
+@@ -77 +77 @@
+-//usage:     "\n	-A		Ping as soon as reply is recevied"
++//usage:     "\n	-A		Ping as soon as reply is received"
+@@ -94 +94 @@
+-//usage:     "\n	-A		Ping as soon as reply is recevied"
++//usage:     "\n	-A		Ping as soon as reply is received"
