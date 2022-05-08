@@ -76,6 +76,7 @@ Description: Tiny utilities for the debian-installer
 
 Package: busybox-syslogd
 Architecture: all
+Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
  lsb-base,
@@ -104,6 +105,7 @@ Description: Provides syslogd and klogd using busybox
 Package: udhcpc
 Section: net
 Architecture: linux-any
+Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
  ${misc:Depends},
@@ -118,6 +120,7 @@ Description: Provides the busybox DHCP client implementation
 Package: udhcpd
 Section: net
 Architecture: linux-any
+Pre-Depends: ${misc:Pre-Depends}
 Depends:
  busybox (>> ${source:Upstream-Version}) | busybox-static (>> ${source:Upstream-Version}),
  lsb-base,
