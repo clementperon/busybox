@@ -45,7 +45,9 @@ CFLAGS := $(filter-out -O2, ${CFLAGS})
 # added applets).
 export KCONFIG_NOTIMESTAMP=1
 
-%:
+install-indep install-arch install \
+binary-indep binary-arch binary \
+: %:
 	dh $@
 
 ##############################################################################
