@@ -75,7 +75,7 @@ busybox (1:1.30.1-4) unstable; urgency=high
 
 busybox (1:1.30.1-3) unstable; urgency=high
 
-  * Ignore any valid_lft or preferred_lft parameters to ip, thanks 
+  * Ignore any valid_lft or preferred_lft parameters to ip, thanks
     Steve Langasek. Closes: #924442
   * Fix ip oneline, thanks Dominik George. Closes: #924374
 
