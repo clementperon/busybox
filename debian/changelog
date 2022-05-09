@@ -54,6 +54,7 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
   * d/bysybox-static.lintian-overrides: add uses-dpkg-database-directly
   * spelling.diff: two spelling fixes for the source
   * d/changelog: strip trailing space
+  * d/control: mark zip build-dependency with <!nocheck>
 
  -- Chris Boot <bootc@debian.org>  Mon, 27 Dec 2021 13:01:37 +0000
 
