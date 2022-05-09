@@ -53,14 +53,14 @@ binary-indep binary-arch binary \
 
 ##############################################################################
 
-configure: $(patsubst %,${b}/%/.stamp-setup, ${flavours})
+configure: $(patsubst %,$b/%/.stamp-setup, ${flavours})
 .PHONY: configure
 
-${b}/%/.stamp-setup: DIR = ${b}/$*
-${b}/%/.stamp-setup:
+$b/%/.stamp-setup: DIR = $b/$*
+$b/%/.stamp-setup:
 	rm -rf ${DIR}
 	mkdir -p ${DIR}
-	cp -a -l $(filter-out debian ${b}, $(wildcard *)) ${DIR}
+	cp -a -l $(filter-out debian $b, $(wildcard *)) ${DIR}
 
 # Generate the .config file. First variable assignment wins.
 # Several steps..
@@ -107,13 +107,13 @@ endif
 
 ##############################################################################
 
-build-arch: $(patsubst %,${b}/%/.stamp-build, ${flavours})
+build-arch: $(patsubst %,$b/%/.stamp-build, ${flavours})
 build: build-arch
 build-indep:
 .PHONY: build build-arch build-indep
 
-${b}/%/.stamp-build: DIR = ${b}/$*
-${b}/%/.stamp-build: ${b}/%/.stamp-setup
+$b/%/.stamp-build: DIR = $b/$*
+$b/%/.stamp-build: $b/%/.stamp-setup
 	dh_auto_build -- -C ${DIR} all \
 	  SKIP_STRIP=y \
 	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
@@ -127,15 +127,15 @@ ${b}/%/.stamp-build: ${b}/%/.stamp-setup
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 # we run testsuite only for main flavour
-test-dep := ${b}/deb/.stamp-test
+test-dep := $b/deb/.stamp-test
 else
 test-dep :=
 endif
 
 override_dh_auto_test: ${test-dep}
 
-${b}/%/.stamp-test: DIR = ${b}/$*
-${b}/%/.stamp-test:
+$b/%/.stamp-test: DIR = $b/$*
+$b/%/.stamp-test:
 	@echo ======== running testsuite in ${DIR} ========
 # mdev testsuite requires chroot which does not work as non-root user
 	rm -f ${DIR}/testsuite/mdev.tests
@@ -151,15 +151,15 @@ ${b}/%/.stamp-test:
 ##############################################################################
 
 clean:
-	dh_clean ${b}/
+	dh_clean $b/
 .PHONY: clean
 
 ##############################################################################
 
-override_dh_auto_install: $(patsubst %,${b}/%/.stamp-install, ${flavours})
+override_dh_auto_install: $(patsubst %,$b/%/.stamp-install, ${flavours})
 
-${b}/%/.stamp-install: DIR = ${b}/$*
-${b}/%/.stamp-install:
+$b/%/.stamp-install: DIR = $b/$*
+$b/%/.stamp-install:
 	$(MAKE) -C ${DIR} install \
 	  SKIP_STRIP=y \
 	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
@@ -171,17 +171,17 @@ ${b}/%/.stamp-install:
 ##############################################################################
 
 override_dh_installman:
-	dh_installman -pbusybox ${b}/deb/docs/busybox.1
-	dh_installman -pbusybox-static ${b}/static/docs/busybox.1
+	dh_installman -pbusybox $b/deb/docs/busybox.1
+	dh_installman -pbusybox-static $b/static/docs/busybox.1
 
 override_dh_install:
-	rm -f ${b}/udeb/_install/sbin/init
+	rm -f $b/udeb/_install/sbin/init
 
 	dh_install
-	dh_install -pbusybox ${b}/deb/busybox /bin
+	dh_install -pbusybox $b/deb/busybox /bin
 	dh_install -pbusybox debian/tree/busybox/* /
-	dh_install -pbusybox-static ${b}/static/busybox /bin
-	dh_install -pbusybox-udeb ${b}/udeb/_install/* /
+	dh_install -pbusybox-static $b/static/busybox /bin
+	dh_install -pbusybox-udeb $b/udeb/_install/* /
 
 override_dh_installdocs:
 	dh_installdocs
