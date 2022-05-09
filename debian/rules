@@ -25,7 +25,9 @@ TESTSUITE_ENV = SKIP_KNOWN_BUGS=y
 TESTSUITE_ENV += LANG=C.UTF-8 LC_ALL=C.UTF-8
 TESTSUITE_ENV += SKIP_INTERNET_TESTS=y
 # Required for testsuite/taskset.tests
-TESTSUITE_ENV += SHELL='sh -e'
+TESTSUITE_ENV += SHELL='${SHELL}'
+# dash echo does not understand -e, bb builds its own in this case
+TESTSUITE_ENV += ECHO=/bin/echo
 
 # build directory
 b = debian/build
