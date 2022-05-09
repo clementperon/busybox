@@ -126,17 +126,12 @@ $b/%/.stamp-build: $b/%/.stamp-setup
 
 ##############################################################################
 
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-# we run testsuite only for main flavour
-test-dep := $b/deb/.stamp-test
-else
-test-dep :=
-endif
-
-override_dh_auto_test: ${test-dep}
+build-arch: $(if $(filter nocheck,${DEB_BUILD_OPTIONS}),,test-deb)
+$(addprefix test-,${flavours}): test-%: $b/%/.stamp-test
+.PHONY: $(addprefix test-,${flavours})
 
 $b/%/.stamp-test: DIR = $b/$*
-$b/%/.stamp-test:
+$b/%/.stamp-test: $b/%/.stamp-build
 	@echo ======== running testsuite in ${DIR} ========
 # mdev testsuite requires chroot which does not work as non-root user
 	rm -f ${DIR}/testsuite/mdev.tests
