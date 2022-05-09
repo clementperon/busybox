@@ -7,6 +7,7 @@ SHELL = /bin/sh -e
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+V = 1
 
 # Activate full hardening build flags
 export DEB_BUILD_MAINT_OPTIONS := hardening=+all
@@ -93,7 +94,7 @@ endif
 	cat debian/config/pkg/$* >> ${DIR}/.config
 
 # 5, sort out the resulting mess using oldconfig Kbuild machinery
-	yes "" | ${MAKE} -C ${DIR} oldconfig V=1
+	yes "" | ${MAKE} -C ${DIR} oldconfig V=$V
 
 # 6, on linux platform only, compare the re-generated config to the shipped
 # config in the package in order to catch new/changed upstream options.
@@ -117,7 +118,7 @@ $b/%/.stamp-build: $b/%/.stamp-setup
 	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
 	  CONFIG_EXTRA_CFLAGS='${CFLAGS} ${CPPFLAGS}' \
 	  CONFIG_EXTRA_LDFLAGS='${CFLAGS} ${LDFLAGS}' \
-	  V=1
+	  V=$V
 
 	ln -sf busybox $@
 
@@ -163,7 +164,7 @@ $b/%/.stamp-install:
 	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
 	  CONFIG_EXTRA_CFLAGS='${CFLAGS} ${CPPFLAGS}' \
 	  CONFIG_EXTRA_LDFLAGS='${CFLAGS} ${LDFLAGS}' \
-	  V=1
+	  V=$V
 	touch $@
 
 ##############################################################################
