@@ -79,12 +79,7 @@ $b/%/.stamp-setup:
 # which select PLATFORM_LINUX.
 # Configuration information is stored in source files and in Config.src,
 # so we have to generate Config.in files first, -- done by gen_build_files.
-	${MAKE} -C ${DIR} gen_build_files \
-	  SKIP_STRIP=y \
-	  BB_EXTRA_VERSION="${DEB_VENDOR} ${DEB_VERSION}" \
-	  CONFIG_EXTRA_CFLAGS='${CFLAGS} ${CPPFLAGS}' \
-	  CONFIG_EXTRA_LDFLAGS='${CFLAGS} ${LDFLAGS}' \
-	  V=1
+	${MAKE} -C ${DIR} gen_build_files
 ifneq (linux,${DEB_HOST_ARCH_OS})
 	find ${DIR} -name Config.in -exec \
 	  awk '$$1 == "config" { conf = $$2 } \
