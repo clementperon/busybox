@@ -186,14 +186,6 @@ override_dh_install:
 	dh_install -pbusybox-static $b/static/busybox /bin
 	dh_install -pbusybox-udeb $b/udeb/_install/* /
 
-override_dh_installdocs:
-	dh_installdocs
-	dh_installdocs -pbusybox docs/syslog.conf.txt docs/mdev.txt
-	dh_installdocs -pbusybox-static docs/syslog.conf.txt docs/mdev.txt
-
-override_dh_installexamples:
-	dh_installexamples -pbusybox-static examples/mdev* examples/udhcp
-
 override_dh_installinit:
 	dh_installinit -pbusybox-syslogd
 	dh_installinit -pbusybox-syslogd --name=busybox-klogd
