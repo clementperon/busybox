@@ -10,7 +10,10 @@ SHELL = /bin/sh -e
 
 # Activate full hardening build flags
 export DEB_BUILD_MAINT_OPTIONS := hardening=+all
-
+# Fast version of dpkg/architecture.mk defining all vars in one go
+ifeq (${DEB_HOST_MULTIARCH},)
+   $(foreach d, $(shell dpkg-architecture | sed 's/=/?=/'), $(eval export $d))
+endif
 include /usr/share/dpkg/default.mk
 
 ##############################################################################
