@@ -33,15 +33,24 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
   * switch to debhelper-compat=13
   * d/control: add ${misc:Pre-Depends} for packages with the startup scripts
   * enable tr classes for static build to
+  * enable less applet for udeb (Closes: #949626)
+  * enable base64 applet for regular and static (Closes: #998804)
   * d/rules: stop filtering -Wformat-security from CFLAG, it is okay now
   * d/rules: simplify the clean rule, omit dh in there
   * d/rules: made build-% depending on config-%
   * d/rules: steal build targets from dh which adds unnecessary indirection
   * d/rules: only do install & binary targets with dh
   * d/rules: set SHELL to sh -e to catch errors in shell fragments
-  * d/rules: add .NOTPARALLEL to run the top-level rules non-parallel
-    but allow submakes to run commands in parallel, to stop intermixing
-    output from different builds
+  * d/rules: rework build/install procedure to be more robust wrt the
+    environment variables: ensure busybox is built only once with right
+    CFLAGS/CPPFLAGS/etc settings and not rebuilt during install time
+  * many more smaller tweaks to d/rules:
+    - fast inline version of architecture.mk
+    - move examples & docs install from d/rules to d/*.{docs,examples}
+    - switch from ${b} to $b
+    - allow overriding verbose build by specifying V=
+    - add shortcut targets build-deb configure-udeb test-static etc
+    - export ECHO=/bin/echo for testsuite (it builds its own if no -e)
   * d/bysybox-static.lintian-overrides: add uses-dpkg-database-directly
   * spelling.diff: two spelling fixes for the source
   * d/changelog: strip trailing space
