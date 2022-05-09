@@ -58,7 +58,8 @@ binary-indep binary-arch binary \
 ##############################################################################
 
 configure: $(patsubst %,$b/%/.stamp-setup, ${flavours})
-.PHONY: configure
+$(addprefix configure-,${flavours}): configure-%: $b/%/.stamp-setup
+.PHONY: configure $(addprefix configure-,${flavours})
 
 $b/%/.stamp-setup: DIR = $b/$*
 $b/%/.stamp-setup:
@@ -108,8 +109,9 @@ endif
 
 build-arch: $(patsubst %,$b/%/.stamp-build, ${flavours})
 build: build-arch
+$(addprefix build-,${flavours}): build-%: $b/%/.stamp-build
 build-indep:
-.PHONY: build build-arch build-indep
+.PHONY: build build-arch build-indep $(addprefix build-,${flavours})
 
 $b/%/.stamp-build: DIR = $b/$*
 $b/%/.stamp-build: $b/%/.stamp-setup
