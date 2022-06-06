@@ -459,9 +459,6 @@ static const char mount_option_str[] ALIGN1 =
 
 
 struct globals {
-#if ENABLE_FEATURE_MOUNT_NFS
-	smalluint nfs_mount_version;
-#endif
 #if ENABLE_FEATURE_MOUNT_VERBOSE
 	unsigned verbose;
 #endif
@@ -470,7 +467,7 @@ struct globals {
 } FIX_ALIASING;
 enum { GETMNTENT_BUFSIZE = COMMON_BUFSIZE - offsetof(struct globals, getmntent_buf) };
 #define G (*(struct globals*)bb_common_bufsiz1)
-#define nfs_mount_version (G.nfs_mount_version)
+#define nfs_mount_version 4 /* assume kernel>= 2.4, use v4 nfs mount protocol */
 #if ENABLE_FEATURE_MOUNT_VERBOSE
 #define verbose           (G.verbose          )
 #else
@@ -1133,6 +1130,7 @@ static bool_t xdr_mountres3(XDR *xdrs, mountres3 *objp)
 static void
 find_kernel_nfs_mount_version(void)
 {
+#if 0
 	int kernel_version;
 
 	if (nfs_mount_version)
@@ -1146,6 +1144,7 @@ find_kernel_nfs_mount_version(void)
 			nfs_mount_version = 3;
 		/* else v4 since 2.3.99pre4 */
 	}
+#endif
 }
 
 static void
