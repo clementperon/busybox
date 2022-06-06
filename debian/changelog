@@ -1,4 +1,4 @@
-busybox (1:1.35.0-1) UNRELEASED; urgency=medium
+busybox (1:1.35.0-1) unstable; urgency=medium
 
   [ Nobuhiro Iwamatsu ]
   * Enable stty applet in busybox-udeb. Closes: #891806
@@ -49,12 +49,15 @@ busybox (1:1.35.0-1) UNRELEASED; urgency=medium
     - allow overriding verbose build by specifying V=
     - add shortcut targets build-deb configure-udeb test-static etc
     - export ECHO=/bin/echo for testsuite (it builds its own if no -e)
+  * remove scripts-echo.c-fix-NUL-handling-in-abc-0-def.patch - not needed
+    with the right ECHO=
   * d/bysybox-static.lintian-overrides: add uses-dpkg-database-directly
   * spelling.diff: two spelling fixes for the source
   * d/changelog: strip trailing space
   * d/control: mark zip build-dependency with <!nocheck>
+  * udeb config: enable awk applet the same way as for regular/static builds
 
- -- Chris Boot <bootc@debian.org>  Mon, 27 Dec 2021 13:01:37 +0000
+ -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 06 Jun 2022 21:25:41 +0300
 
 busybox (1:1.30.1-7) unstable; urgency=medium
 
