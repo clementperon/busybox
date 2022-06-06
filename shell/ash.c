@@ -14401,8 +14401,13 @@ init(void)
 
 		initvar();
 		for (envp = environ; envp && *envp; envp++) {
+#if ENABLE_FEATURE_DI_ENV_HACK
+			if (strchr(*envp, '='))
+#else
 			p = endofname(*envp);
-			if (p != *envp && *p == '=') {
+			if (p != *envp && *p == '=')
+#endif
+			{
 				setvareq(*envp, VEXPORT|VTEXTFIXED);
 			}
 		}
