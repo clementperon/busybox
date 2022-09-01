@@ -27,7 +27,7 @@ busybox (1:1.35.0-1) unstable; urgency=medium
   * Don't run test suite in verbose mode: it's easier to read without.
 
   [ Michael Tokarev ]
-  * d/control: add myself to upladers
+  * d/control: add myself to uploaders
   * switch to debhelper-compat=13
   * d/control: add ${misc:Pre-Depends} for packages with the startup scripts
   * enable tr classes for static build to
@@ -51,7 +51,7 @@ busybox (1:1.35.0-1) unstable; urgency=medium
     - export ECHO=/bin/echo for testsuite (it builds its own if no -e)
   * remove scripts-echo.c-fix-NUL-handling-in-abc-0-def.patch - not needed
     with the right ECHO=
-  * d/bysybox-static.lintian-overrides: add uses-dpkg-database-directly
+  * d/busybox-static.lintian-overrides: add uses-dpkg-database-directly
   * spelling.diff: two spelling fixes for the source
   * d/changelog: strip trailing space
   * d/control: mark zip build-dependency with <!nocheck>
