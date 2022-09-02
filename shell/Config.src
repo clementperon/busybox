@@ -184,6 +184,13 @@ config FEATURE_SH_EMBEDDED_SCRIPTS
 	the script in 'applets_sh' and a stub C file containing
 	configuration in the appropriate subsystem directory.
 
+config FEATURE_DI_ENV_HACK
+	bool "Use d-i environment variable hack"
+	default n
+	depends on ASH || HUSH || SH_IS_ASH || BASH_IS_ASH || SH_IS_HUSH || BASH_IS_HUSH
+	help
+	  Do NOT use this. You don't want this. Really.
+
 endif # Options common to all shells
 
 endmenu
