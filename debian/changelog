@@ -1,3 +1,19 @@
+busybox (1:1.35.0-2) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Michael Tokarev ]
+  * configs: enable (fast) sha3sum for regular and static builds (#1012828)
+
+  [ Philip Hands ]
+  * enable base64 in udeb
+  * enable salsa-CI (via branch2repo)
+  * remove redundant triggers (dh_installinitramfs creates them)
+  * fix lintian mismatch override
+  * refresh fuzzy patches
+
+ -- Philip Hands <phil@hands.com>  Fri, 02 Sep 2022 17:10:44 +0200
+
 busybox (1:1.35.0-1) unstable; urgency=medium
 
   [ Nobuhiro Iwamatsu ]
