@@ -6,6 +6,7 @@ variables:
   # re-enable things that branch2repo defaults to disabling
   SALSA_CI_DISABLE_PIUPARTS: 0
   SALSA_CI_DISABLE_AUTOPKGTEST: 0
+  SALSA_CI_DISABLE_LINTIAN: 0
 
 #FIXME: upon first enabling salsa-CI, the blhc test is failing I'm afraid I
 #       (Philip Hands) don't know if setting hardening flags is a good idea for
