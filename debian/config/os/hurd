@@ -5,7 +5,5 @@ CONFIG_MOUNT=n
 CONFIG_UMOUNT=n
 CONFIG_SWAPONOFF=n
 CONFIG_TASKSET=n
-# loadfont includes linux sys/kd.h
-CONFIG_LOADFONT=n
 # hurd does not have a working equivalent of /proc/self/exe
 CONFIG_BUSYBOX_EXEC_PATH="/bin/busybox"

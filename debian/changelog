@@ -15,7 +15,6 @@ busybox (1:1.35.0-3) UNRELEASED; urgency=medium
   * deb,static: enable findfs applet (useful for rescue purposes)
   * d/rules: use diff instead of cmp to compare config files
     (makes differences, if any, to be immediately visible)
-  * hurd: disable loadfont (uses linux sys/kd.h)
 
  -- Michael Tokarev <mjt@tls.msk.ru>  Mon, 17 Oct 2022 13:21:00 +0300
 
