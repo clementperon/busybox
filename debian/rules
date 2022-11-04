@@ -131,13 +131,14 @@ $(addprefix test-,${flavours}): test-%: $b/%/.stamp-test
 $b/%/.stamp-test: d = $b/$*
 $b/%/.stamp-test: $b/%/.stamp-build
 	@echo ======== running testsuite in $d ========
-# mdev testsuite requires chroot which does not work as non-root user
-	rm -f $d/testsuite/mdev.tests
-# disable or fix some failing tests
-	if [ -f debian/testsuite-${DEB_HOST_ARCH_OS}.diff ] && \
-	   ! [ -f $d/.tests-fixed ]; then \
-		( cd $d && patch -p1 && touch .tests-fixed; ) \
+	@if [ ! -f $d/testsuite/.setup ]; then \
+	    rm  -rf $d/testsuite ; \
+	    cp -al testsuite $d/ ; \
+	    rm -f $d/testsuite/mdev.tests; \
+	    [ ! -f debian/testsuite-${DEB_HOST_ARCH_OS}.diff ] || \
+		patch -p1 -d $d/ \
 		  < debian/testsuite-${DEB_HOST_ARCH_OS}.diff ; \
+	    touch $d/testsuite/.setup ; \
 	fi
 	cd $d/testsuite && ${TESTSUITE_ENV} ./runtest
 	touch $@
