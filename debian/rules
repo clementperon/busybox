@@ -147,6 +147,7 @@ $b/%/.stamp-test: $b/%/.stamp-build
 
 clean:
 	dh_clean $b/
+	rm -f .kernelrelease # leftover from the build process
 .PHONY: clean
 
 ##############################################################################
