@@ -32,7 +32,7 @@ TESTSUITE_ENV += SHELL='${SHELL}'
 TESTSUITE_ENV += ECHO=/bin/echo
 
 # build directory
-b = debian/build
+b = b
 
 # which flavours to build
 flavours = deb static udeb
