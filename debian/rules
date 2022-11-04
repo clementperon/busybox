@@ -69,25 +69,21 @@ $b/%/.stamp-setup: DIR = $b/$*
 $b/%/.stamp-setup:
 	rm -rf ${DIR}
 	mkdir -p ${DIR}
-	cp -a -l $(filter-out debian $b, $(wildcard *)) ${DIR}
 
 # Generate the .config file. First variable assignment wins.
 # Several steps..
 
-# 1, rm it just in case
-	rm -f ${DIR}/.config
-
-# 2, put any arch-specific overrides so they will have higher precedence
+# 1, put any arch-specific overrides so they will have higher precedence
 # should be empty for linux
 	cat debian/config/os/${DEB_HOST_ARCH_OS} > ${DIR}/.config
 
-# 3, use the flavour-specific base config file.
+# 2, use the flavour-specific base config file.
 	cat debian/config/pkg/$* >> ${DIR}/.config
 
-# 4, sort out the resulting mess using oldconfig Kbuild machinery
-	yes "" | ${MAKE} -C ${DIR} silentoldconfig V=$V
+# 3, sort out the result using oldconfig Kbuild machinery and generate Makefile
+	yes "" | ${MAKE} -C ${DIR} -f "${CURDIR}/Makefile" KBUILD_SRC="${CURDIR}" silentoldconfig V=$V
 
-# 5, on linux platform only, compare the re-generated config to the shipped
+# 4, on linux platform only, compare the re-generated config to the shipped
 # config in the package in order to catch new/changed upstream options.
 ifeq (linux,${DEB_HOST_ARCH_OS})
 	diff -u debian/config/pkg/$* ${DIR}/.config
