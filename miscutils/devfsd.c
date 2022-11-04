@@ -56,6 +56,7 @@
 //config:config DEVFSD
 //config:	bool "devfsd (obsolete)"
 //config:	default n
+//config:	depends on PLATFORM_LINUX
 //config:	select FEATURE_SYSLOG
 //config:	help
 //config:	This is deprecated and should NOT be used anymore.
@@ -98,6 +99,7 @@
 //config:config FEATURE_DEVFS
 //config:	bool "Use devfs names for all devices (obsolete)"
 //config:	default n
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	This is obsolete and should NOT be used anymore.
 //config:	Use linux >= 2.6 (optionally with hotplug) and mdev instead!

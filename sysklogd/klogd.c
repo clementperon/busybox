@@ -33,6 +33,7 @@
 //config:	bool "Use the klogctl() interface"
 //config:	default y
 //config:	depends on KLOGD
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	The klogd applet supports two interfaces for reading
 //config:	kernel messages. Linux provides the klogctl() interface

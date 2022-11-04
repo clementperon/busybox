@@ -9,6 +9,7 @@
 //config:config DUMPKMAP
 //config:	bool "dumpkmap (1.6 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	This program dumps the kernel's keyboard translation table to
 //config:	stdout, in binary format. You can then use loadkmap to load it.

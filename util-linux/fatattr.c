@@ -11,6 +11,7 @@
 //config:config FATATTR
 //config:	bool "fatattr (1.9 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	fatattr lists or changes the file attributes on a fat file system.
 

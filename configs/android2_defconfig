@@ -4,6 +4,7 @@
 # android-ndk-r6/build/tools/make-standalone-toolchain.sh --platform=android-8
 #
 CONFIG_HAVE_DOT_CONFIG=y
+CONFIG_PLATFORM_LINUX=y
 
 #
 # Busybox Settings

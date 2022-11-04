@@ -9,6 +9,7 @@
 //config:config RAIDAUTORUN
 //config:	bool "raidautorun (1.3 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	raidautorun tells the kernel md driver to
 //config:	search and start RAID arrays.

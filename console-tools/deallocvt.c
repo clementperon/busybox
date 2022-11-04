@@ -10,6 +10,7 @@
 //config:config DEALLOCVT
 //config:	bool "deallocvt (1.9 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	This program deallocates unused virtual consoles.
 

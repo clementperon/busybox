@@ -9,6 +9,7 @@
 //config:config LSPCI
 //config:	bool "lspci (6.3 kb)"
 //config:	default y
+//config:	#depends on PLATFORM_LINUX
 //config:	help
 //config:	lspci is a utility for displaying information about PCI buses in the
 //config:	system and devices connected to them.

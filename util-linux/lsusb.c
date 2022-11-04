@@ -9,6 +9,7 @@
 //config:config LSUSB
 //config:	bool "lsusb (4.2 kb)"
 //config:	default y
+//config:	#depends on PLATFORM_LINUX
 //config:	help
 //config:	lsusb is a utility for displaying information about USB buses in the
 //config:	system and devices connected to them.

@@ -15,6 +15,7 @@
 //config:config EJECT
 //config:	bool "eject (4 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Used to eject cdroms. (defaults to /dev/cdrom)
 //config:

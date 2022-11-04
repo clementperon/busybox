@@ -9,6 +9,7 @@
 //config:config LOADKMAP
 //config:	bool "loadkmap (1.8 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	This program loads a keyboard translation table from
 //config:	standard input.

@@ -12,6 +12,7 @@
 //config:config LSATTR
 //config:	bool "lsattr (5.5 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	lsattr lists the file attributes on a second extended file system.
 

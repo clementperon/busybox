@@ -16,6 +16,7 @@
 //config:config ZCIP
 //config:	bool "zcip (8.4 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	select FEATURE_SYSLOG
 //config:	help
 //config:	ZCIP provides ZeroConf IPv4 address selection, according to RFC 3927.

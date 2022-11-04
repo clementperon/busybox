@@ -9,6 +9,9 @@ config HAVE_DOT_CONFIG
 	bool
 	default y
 
+# include generated CONFIG_PLATFORM_LINUX symbol:
+source .platform.in
+
 menu "Settings"
 
 config DESKTOP
@@ -312,6 +315,7 @@ config BUSYBOX_EXEC_PATH
 config SELINUX
 	bool "Support NSA Security Enhanced Linux"
 	default n
+	depends on PLATFORM_LINUX
 	help
 	Enable support for SELinux in applets ls, ps, and id. Also provide
 	the option of compiling in SELinux applets.

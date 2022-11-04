@@ -9,6 +9,7 @@
 //config:config SHOWKEY
 //config:	bool "showkey (4.7 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Shows keys pressed.
 

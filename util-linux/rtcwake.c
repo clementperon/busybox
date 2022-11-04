@@ -25,6 +25,7 @@
 //config:config RTCWAKE
 //config:	bool "rtcwake (6.8 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Enter a system sleep state until specified wakeup time.
 

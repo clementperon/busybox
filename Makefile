@@ -361,8 +361,15 @@ scripts/basic/%: scripts_basic ;
 
 # This target generates Kbuild's and Config.in's from *.c files
 PHONY += gen_build_files
-gen_build_files: $(wildcard $(srctree)/*/*.c) $(wildcard $(srctree)/*/*/*.c) $(wildcard $(srctree)/embed/*)
+gen_build_files: $(wildcard $(srctree)/*/*.c) $(wildcard $(srctree)/*/*/*.c) $(wildcard $(srctree)/embed/*) .platform.in
 	$(Q)$(srctree)/scripts/gen_build_files.sh $(srctree) $(objtree)
+
+.platform.in:
+	$(Q)printf '#ifndef __linux__\nplatform_is_not_linux\n#endif' \
+	    | $(CPP) - | grep -s platform_is_not_linux \
+	  && linux=n || linux=y; \
+	printf "config PLATFORM_LINUX\n\tbool\n\tdefault $$linux\n" > $@
+MRPROPER_FILES += .platform.in
 
 # bbox: we have helpers in applets/
 # we depend on scripts_basic, since scripts/basic/fixdep

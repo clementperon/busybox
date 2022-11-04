@@ -65,6 +65,7 @@
 //config:config MKFS_MINIX
 //config:	bool "mkfs.minix (10 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	The minix filesystem is a nice, small, compact, read-write filesystem
 //config:	with little overhead. If you wish to be able to create minix

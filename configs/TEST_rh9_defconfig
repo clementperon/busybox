@@ -4,6 +4,7 @@
 # Fri Apr 16 22:25:22 2010
 #
 CONFIG_HAVE_DOT_CONFIG=y
+CONFIG_PLATFORM_LINUX=y
 
 #
 # Busybox Settings

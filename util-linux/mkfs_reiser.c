@@ -9,6 +9,7 @@
 //config:config MKFS_REISER
 //config:	bool "mkfs_reiser"
 //config:	default n
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Utility to create ReiserFS filesystems.
 //config:	Note: this applet needs a lot of testing and polishing.

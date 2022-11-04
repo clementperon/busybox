@@ -14,6 +14,7 @@
 //config:config HDPARM
 //config:	bool "hdparm (25 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Get/Set hard drive parameters. Primarily intended for ATA
 //config:	drives.

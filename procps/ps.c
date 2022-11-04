@@ -35,6 +35,7 @@
 //config:	bool "Enable -o time and -o etime specifiers"
 //config:	default y
 //config:	depends on (PS || MINIPS) && DESKTOP
+//config:	depends on PLATFORM_LINUX
 //config:
 //config:config FEATURE_PS_UNUSUAL_SYSTEMS
 //config:	bool "Support Linux prior to 2.4.0 and non-ELF systems"

@@ -8,6 +8,7 @@
 //config:config BLKDISCARD
 //config:	bool "blkdiscard (4.3 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	blkdiscard discards sectors on a given device.
 

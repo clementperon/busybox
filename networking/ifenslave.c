@@ -100,6 +100,7 @@
 //config:config IFENSLAVE
 //config:	bool "ifenslave (13 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Userspace application to bind several interfaces
 //config:	to a logical interface (use with kernel bonding driver).

@@ -9,6 +9,7 @@
 //config:config FGCONSOLE
 //config:	bool "fgconsole (1.5 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	This program prints active (foreground) console number.
 

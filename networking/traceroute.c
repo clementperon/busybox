@@ -212,6 +212,7 @@
 //config:config TRACEROUTE
 //config:	bool "traceroute (11 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Utility to trace the route of IP packets.
 //config:

@@ -10,12 +10,14 @@
 //config:config MKDOSFS
 //config:	bool "mkdosfs (7.2 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Utility to create FAT32 filesystems.
 //config:
 //config:config MKFS_VFAT
 //config:	bool "mkfs.vfat (7.2 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Alias to "mkdosfs".
 

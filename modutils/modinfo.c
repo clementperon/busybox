@@ -8,6 +8,7 @@
 //config:config MODINFO
 //config:	bool "modinfo (24 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Show information about a Linux Kernel module
 

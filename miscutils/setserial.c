@@ -10,6 +10,7 @@
 //config:config SETSERIAL
 //config:	bool "setserial (6.9 kb)"
 //config:	default y
+//config:	depends on PLATFORM_LINUX
 //config:	help
 //config:	Retrieve or set Linux serial port.
 
