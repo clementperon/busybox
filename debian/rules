@@ -81,27 +81,13 @@ $b/%/.stamp-setup:
 # should be empty for linux
 	cat debian/config/os/${DEB_HOST_ARCH_OS} > ${DIR}/.config
 
-# 3, on non-linux platform, disable all config symbols
-# which select PLATFORM_LINUX.
-# Configuration information is stored in source files and in Config.src,
-# so we have to generate Config.in files first, -- done by gen_build_files.
-	${MAKE} -C ${DIR} gen_build_files
-ifneq (linux,${DEB_HOST_ARCH_OS})
-	find ${DIR} -name Config.in -exec \
-	  awk '$$1 == "config" { conf = $$2 } \
-	       $$1 == "select" && $$2 == "PLATFORM_LINUX" \
-	       { print "CONFIG_" conf "=n"; }' \
-	   {} + \
-        | sort -u >> ${DIR}/.config
-endif
-
-# 4, use the flavour-specific base config file.
+# 3, use the flavour-specific base config file.
 	cat debian/config/pkg/$* >> ${DIR}/.config
 
-# 5, sort out the resulting mess using oldconfig Kbuild machinery
-	yes "" | ${MAKE} -C ${DIR} oldconfig V=$V
+# 4, sort out the resulting mess using oldconfig Kbuild machinery
+	yes "" | ${MAKE} -C ${DIR} silentoldconfig V=$V
 
-# 6, on linux platform only, compare the re-generated config to the shipped
+# 5, on linux platform only, compare the re-generated config to the shipped
 # config in the package in order to catch new/changed upstream options.
 ifeq (linux,${DEB_HOST_ARCH_OS})
 	diff -u debian/config/pkg/$* ${DIR}/.config
