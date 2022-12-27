@@ -123,6 +123,22 @@ config FEATURE_UDHCP_PORT
 	At the cost of ~300 bytes, enables -P port option.
 	This feature is typically not needed.
 
+config FEATURE_UDHCPC_DECLINE
+	bool "Decline DHCP offers that are in configured subnets"
+	default y
+	depends on UDHCPC
+	help
+	If selected, udhcpc will decline DHCP offer if decline
+	script returns 1.
+
+config UDHCPC_DEFAULT_DECLINE_SCRIPT
+	string "Absolute path to decline script"
+	default "/usr/share/udhcpc/decline.script"
+	depends on UDHCPC
+	help
+	The script is called after client receives offer from server.
+	Decline script returns 0 when offer should be accepted.
+
 config UDHCP_DEBUG
 	int "Maximum verbosity level (0..9)"
 	default 2

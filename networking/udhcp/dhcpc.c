@@ -34,6 +34,8 @@
 #include <netinet/if_ether.h>
 #include <linux/filter.h>
 #include <linux/if_packet.h>
+#include <net/if.h>
+#include <arpa/inet.h>
 
 #ifndef PACKET_AUXDATA
 # define PACKET_AUXDATA 8
@@ -77,6 +79,7 @@ static const char udhcpc_longopts[] ALIGN1 =
 	"broadcast\0"      No_argument       "B"
 	IF_FEATURE_UDHCPC_ARPING("arping\0"	Optional_argument "a")
 	IF_FEATURE_UDHCP_PORT("client-port\0"	Required_argument "P")
+	IF_FEATURE_UDHCPC_DECLINE("decline-script\0"	Required_argument "d")
 	;
 #endif
 /* Must match getopt32 option string order */
@@ -105,9 +108,11 @@ enum {
 	USE_FOR_MMU(             OPTBIT_b,)
 	IF_FEATURE_UDHCPC_ARPING(OPTBIT_a,)
 	IF_FEATURE_UDHCP_PORT(   OPTBIT_P,)
+	IF_FEATURE_UDHCPC_DECLINE(OPTBIT_d,)
 	USE_FOR_MMU(             OPT_b = 1 << OPTBIT_b,)
 	IF_FEATURE_UDHCPC_ARPING(OPT_a = 1 << OPTBIT_a,)
 	IF_FEATURE_UDHCP_PORT(   OPT_P = 1 << OPTBIT_P,)
+	IF_FEATURE_UDHCPC_DECLINE(OPT_d = 1 << OPTBIT_d,)
 };
 
 
@@ -1155,6 +1160,52 @@ static void client_background(void)
 }
 #endif
 
+#if ENABLE_FEATURE_UDHCPC_DECLINE
+static int udhcp_run_decline_script(struct dhcp_packet *packet)
+{
+	char yiaddr_str[INET_ADDRSTRLEN];
+	char gateway_str[INET_ADDRSTRLEN];
+	char cmd_str[128];
+	uint32_t subnet_mask;
+	uint32_t gateway;
+	uint8_t *option_data;
+	int ret;
+
+	if (client_data.decline_script) {
+		log1("executing %s", client_data.decline_script);
+		if (inet_ntop(AF_INET, &packet->yiaddr, yiaddr_str, INET_ADDRSTRLEN) == NULL) {
+			bb_error_msg("Unable to convert client IP to string");
+			return 0;
+		}
+		option_data = udhcp_get_option(packet, DHCP_SUBNET);
+		if (!option_data) {
+			bb_error_msg("Unable to get address mask");
+			return 0;
+		}
+		move_from_unaligned32(subnet_mask, option_data);
+		snprintf(cmd_str, sizeof(cmd_str), "%s %s %s/%d", client_data.decline_script, client_data.interface,  yiaddr_str, __builtin_popcount(subnet_mask));
+		option_data = udhcp_get_option(packet, DHCP_ROUTER);
+		if (option_data) {
+			move_from_unaligned32(gateway, option_data);
+			if (gateway) {
+				if (inet_ntop(AF_INET, &gateway, gateway_str, INET_ADDRSTRLEN) == NULL) {
+					bb_error_msg("Unable to convert gateway IP to string");
+					return 0;
+				}
+				strcat(cmd_str, " ");
+				strcat(cmd_str, gateway_str);
+			}
+		}
+		ret = system(cmd_str);
+		if (ret != -1 && WEXITSTATUS(ret) == 1) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+#endif
+
 //usage:#if defined CONFIG_UDHCP_DEBUG && CONFIG_UDHCP_DEBUG >= 1
 //usage:# define IF_UDHCP_VERBOSE(...) __VA_ARGS__
 //usage:#else
@@ -1162,12 +1213,16 @@ static void client_background(void)
 //usage:#endif
 //usage:#define udhcpc_trivial_usage
 //usage:       "[-fbq"IF_UDHCP_VERBOSE("v")"RB]"IF_FEATURE_UDHCPC_ARPING(" [-a[MSEC]]")" [-t N] [-T SEC] [-A SEC|-n]\n"
-//usage:       "	[-i IFACE]"IF_FEATURE_UDHCP_PORT(" [-P PORT]")" [-s PROG] [-p PIDFILE]\n"
+//usage:       "	[-i IFACE]"IF_FEATURE_UDHCP_PORT(" [-P PORT]")IF_FEATURE_UDHCPC_DECLINE(" [-d DECLINE_PROG]")" [-s PROG] [-p PIDFILE]\n"
 //usage:       "	[-oC] [-r IP] [-V VENDOR] [-F NAME] [-x OPT:VAL]... [-O OPT]..."
 //usage:#define udhcpc_full_usage "\n"
 //usage:     "\n	-i IFACE	Interface to use (default "CONFIG_UDHCPC_DEFAULT_INTERFACE")"
 //usage:	IF_FEATURE_UDHCP_PORT(
 //usage:     "\n	-P PORT		Use PORT (default 68)"
+//usage:	)
+//usage:	IF_FEATURE_UDHCPC_DECLINE(
+//usage:     "\n	-d DECLINE_PROG	Run DECLINE_PROG when client receives DHCP offer"
+//usage:	 "\n			(default "CONFIG_UDHCPC_DEFAULT_DECLINE_SCRIPT")"
 //usage:	)
 //usage:     "\n	-s PROG		Run PROG at DHCP events (default "CONFIG_UDHCPC_DEFAULT_SCRIPT")"
 //usage:     "\n	-p FILE		Create pidfile"
@@ -1236,6 +1291,9 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 	client_data.script = CONFIG_UDHCPC_DEFAULT_SCRIPT;
 	client_data.sockfd = -1;
 	str_V = "udhcp "BB_VER;
+	IF_FEATURE_UDHCPC_DECLINE(
+		client_data.decline_script = CONFIG_UDHCPC_DEFAULT_DECLINE_SCRIPT;
+	)
 
 	/* Make sure fd 0,1,2 are open */
 	/* Set up the signal pipe on fds 3,4 - must be before openlog() */
@@ -1248,6 +1306,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		USE_FOR_MMU("b")
 		IF_FEATURE_UDHCPC_ARPING("a::")
 		IF_FEATURE_UDHCP_PORT("P:")
+		IF_FEATURE_UDHCPC_DECLINE("d:")
 		"v"
 		"\0" IF_UDHCP_VERBOSE("vv") /* -v is a counter */
 		, udhcpc_longopts
@@ -1260,6 +1319,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		, &list_x
 		IF_FEATURE_UDHCPC_ARPING(, &str_a)
 		IF_FEATURE_UDHCP_PORT(, &str_P)
+		IF_FEATURE_UDHCPC_DECLINE(, &client_data.decline_script)
 		IF_UDHCP_VERBOSE(, &dhcp_verbose)
 	);
 	if (opt & OPT_F) {
@@ -1701,6 +1761,24 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				temp_addr.s_addr = requested_ip = packet.yiaddr;
 				log1("received offer of %s", inet_ntoa(temp_addr));
 
+#if ENABLE_FEATURE_UDHCPC_DECLINE
+				if (udhcp_run_decline_script(&packet))
+				{
+					bb_error_msg("offered address is in forbidden subnet,"
+						" declining");
+					send_decline(/*xid,*/ server_id, packet.yiaddr);
+
+					if (client_data.state != REQUESTING)
+						d4_run_script_deconfig();
+					change_listen_mode(LISTEN_RAW);
+					client_data.state = INIT_SELECTING;
+					client_data.first_secs = 0; /* make secs field count from 0 */
+					requested_ip = 0;
+					timeout = tryagain_timeout;
+					packet_num = 0;
+					continue; /* back to main loop */
+				}
+#endif
 				/* enter requesting state */
 				client_data.state = REQUESTING;
 				timeout = 0;

@@ -26,6 +26,8 @@ struct client_data_t {
 	int sockfd;
 	smallint listen_mode;
 	smallint state;
+
+	IF_FEATURE_UDHCPC_DECLINE(const char *decline_script;)
 } FIX_ALIASING;
 
 /* server_config sits in 1st half of bb_common_bufsiz1 */
