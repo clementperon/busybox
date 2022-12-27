@@ -1821,8 +1821,8 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 				 */
 				if (lease_remaining < 0) /* signed overflow? */
 					lease_remaining = INT_MAX;
-				if (lease_remaining < 30)
-					lease_remaining = 30;
+				if (lease_remaining < 6)
+					lease_remaining = 6;
 				requested_ip = packet.yiaddr;
 #if ENABLE_FEATURE_UDHCPC_ARPING
 				if (opt & OPT_a) {
