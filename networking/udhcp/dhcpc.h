@@ -7,6 +7,8 @@
 
 PUSH_AND_SET_FUNCTION_VISIBILITY_TO_HIDDEN
 
+IF_FEATURE_UDHCPC_COS(extern uint32_t sk_prio;)
+
 struct client_data_t {
 	uint8_t client_mac[6];          /* Our mac address */
 	IF_FEATURE_UDHCP_PORT(uint16_t port;)

@@ -111,6 +111,14 @@ int FAST_FUNC d6_send_raw_packet_from_client_data_ifindex(
 	packet.ip6.ip6_hlim = 1; /* observed Windows machines to use hlim=1 */
 	packet.ip6.ip6_nxt = IPPROTO_UDP;
 
+IF_FEATURE_UDHCPC_COS(
+	if (sk_prio) {
+		if (setsockopt(fd, SOL_SOCKET, SO_PRIORITY, &sk_prio, sizeof(sk_prio))) {
+			log1s("raw: SO_PRIORITY (dscp v6) setsockopt() failed");
+		}
+	})
+
+
 	d6_dump_packet(d6_pkt);
 	result = sendto(fd, &packet, offsetof(struct ip6_udp_d6_packet, data) + d6_pkt_size,
 			/*flags:*/ 0,

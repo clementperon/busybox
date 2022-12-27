@@ -12,6 +12,8 @@
 #include <netinet/if_ether.h>
 #include <netpacket/packet.h>
 
+IF_FEATURE_UDHCPC_COS(uint32_t sk_prio;)
+
 #if ENABLE_UDHCPC || ENABLE_UDHCPD
 void FAST_FUNC udhcp_init_header(struct dhcp_packet *packet, char type)
 {
@@ -173,6 +175,13 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
 	packet.ip.version = IPVERSION;
 	packet.ip.ttl = IPDEFTTL;
 	packet.ip.check = inet_cksum(&packet.ip, sizeof(packet.ip));
+
+IF_FEATURE_UDHCPC_COS(
+	if (sk_prio) {
+		if (setsockopt(fd, SOL_SOCKET, SO_PRIORITY, &sk_prio, sizeof(sk_prio))) {
+			log1s("raw: SO_PRIORITY (dscp v6) setsockopt() failed");
+		}
+	})
 
 	udhcp_dump_packet(dhcp_pkt);
 	result = sendto(fd, &packet, IP_UDP_DHCP_SIZE - padding, /*flags:*/ 0,

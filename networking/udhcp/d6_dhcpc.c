@@ -129,6 +129,7 @@ static const char udhcpc6_longopts[] ALIGN1 =
 	)
 ///	IF_FEATURE_UDHCPC_ARPING("arping\0"	No_argument       "a")
 	IF_FEATURE_UDHCP_PORT("client-port\0"	Required_argument "P")
+	IF_FEATURE_UDHCPC_COS("cos\0"	Required_argument "y")
 	;
 #endif
 /* Must match getopt32 option string order */
@@ -1152,6 +1153,9 @@ static void client_background(void)
 ////usage:	IF_FEATURE_UDHCPC_ARPING(
 ////usage:     "\n	-a		Use arping to validate offered address"
 ////usage:	)
+//usage:	IF_FEATURE_UDHCPC_COS(
+//usage:     "\n	-y PRIORITY	CoS value 0 .. 7, default 0"
+//usage:	)
 //usage:     "\n	-l		Send 'information request' instead of 'solicit'"
 //usage:     "\n			(used for servers which do not assign IPv6 addresses)"
 //usage:     "\n	-r IPv6		Request this address ('no' to not request any IP)"
@@ -1213,6 +1217,7 @@ int udhcpc6_main(int argc UNUSED_PARAM, char **argv)
 		USE_FOR_MMU("b")
 		///IF_FEATURE_UDHCPC_ARPING("a")
 		IF_FEATURE_UDHCP_PORT("P:")
+		IF_FEATURE_UDHCPC_COS("y:+")
 		"v"
 		"\0" IF_UDHCP_VERBOSE("vv") /* -v is a counter */
 		, udhcpc6_longopts
@@ -1222,6 +1227,7 @@ int udhcpc6_main(int argc UNUSED_PARAM, char **argv)
 		, &list_O
 		, &list_x
 		IF_FEATURE_UDHCP_PORT(, &str_P)
+		IF_FEATURE_UDHCPC_COS(, &sk_prio)
 		IF_UDHCP_VERBOSE(, &dhcp_verbose)
 	);
 	requested_ipv6 = NULL;

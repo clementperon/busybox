@@ -139,6 +139,14 @@ config UDHCPC_DEFAULT_DECLINE_SCRIPT
 	The script is called after client receives offer from server.
 	Decline script returns 0 when offer should be accepted.
 
+config FEATURE_UDHCPC_COS
+	bool "Support Class of Service for DHCP Client"
+	default y
+	depends on UDHCPC
+	help
+	If selected, udhcpc will set -y socket priority.
+	script returns 1.
+
 config UDHCP_DEBUG
 	int "Maximum verbosity level (0..9)"
 	default 2

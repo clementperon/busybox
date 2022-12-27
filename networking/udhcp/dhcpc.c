@@ -80,6 +80,7 @@ static const char udhcpc_longopts[] ALIGN1 =
 	IF_FEATURE_UDHCPC_ARPING("arping\0"	Optional_argument "a")
 	IF_FEATURE_UDHCP_PORT("client-port\0"	Required_argument "P")
 	IF_FEATURE_UDHCPC_DECLINE("decline-script\0"	Required_argument "d")
+	IF_FEATURE_UDHCPC_COS("cos\0"	Required_argument "y")
 	;
 #endif
 /* Must match getopt32 option string order */
@@ -1241,6 +1242,9 @@ static int udhcp_run_decline_script(struct dhcp_packet *packet)
 //usage:	IF_FEATURE_UDHCPC_ARPING(
 //usage:     "\n	-a[MSEC]	Validate offered address with ARP ping"
 //usage:	)
+//usage:	IF_FEATURE_UDHCPC_COS(
+//usage:     "\n	-y PRIORITY	CoS value 0 .. 7, default 0"
+//usage:	)
 //usage:     "\n	-r IP		Request this IP address"
 //usage:     "\n	-o		Don't request any options (unless -O is given)"
 //usage:     "\n	-O OPT		Request option OPT from server (cumulative)"
@@ -1307,6 +1311,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		IF_FEATURE_UDHCPC_ARPING("a::")
 		IF_FEATURE_UDHCP_PORT("P:")
 		IF_FEATURE_UDHCPC_DECLINE("d:")
+		IF_FEATURE_UDHCPC_COS("y:+")
 		"v"
 		"\0" IF_UDHCP_VERBOSE("vv") /* -v is a counter */
 		, udhcpc_longopts
@@ -1320,6 +1325,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 		IF_FEATURE_UDHCPC_ARPING(, &str_a)
 		IF_FEATURE_UDHCP_PORT(, &str_P)
 		IF_FEATURE_UDHCPC_DECLINE(, &client_data.decline_script)
+		IF_FEATURE_UDHCPC_COS(, &sk_prio)
 		IF_UDHCP_VERBOSE(, &dhcp_verbose)
 	);
 	if (opt & OPT_F) {
