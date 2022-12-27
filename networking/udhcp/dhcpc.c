@@ -1290,7 +1290,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 	client_data.interface = CONFIG_UDHCPC_DEFAULT_INTERFACE;
 	client_data.script = CONFIG_UDHCPC_DEFAULT_SCRIPT;
 	client_data.sockfd = -1;
-	str_V = "udhcp "BB_VER;
+	str_V = "";
 	IF_FEATURE_UDHCPC_DECLINE(
 		client_data.decline_script = CONFIG_UDHCPC_DEFAULT_DECLINE_SCRIPT;
 	)
