@@ -163,8 +163,8 @@ struct dhcp_scan_state {
 #define DHCP_PARAM_REQ          0x37 /* 55: list of options client wants */
 #define DHCP_ERR_MESSAGE        0x38 /* 56: error message when sending NAK etc */
 #define DHCP_MAX_SIZE           0x39 /* 57: 16bit big-endian */
-//                              0x3a /* 58: from server: renew time, 32bit big-endian */
-//                              0x3b /* 59: from server: rebind time, 32bit big-endian */
+#define DHCP_RENEW_TIME         0x3a /* 58: from server: renew time, 32bit big-endian */
+#define DHCP_REBIND_TIME        0x3b /* 59: from server: rebind time, 32bit big-endian */
 #define DHCP_VENDOR             0x3c /* 60: client's vendor (a string) */
 #define DHCP_CLIENT_ID          0x3d /* 61: by default client's MAC addr, but may be arbitrarily long */
 #define DHCP_TFTP_SERVER_NAME   0x42 /* 66: same as 'sname' field */
@@ -172,11 +172,13 @@ struct dhcp_scan_state {
 #define DHCP_USER_CLASS         0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
 //                              0x50 /* 80: rapid commit ("I'm ok with getting immediate ACK, not just OFFER"), 0 bytes */
 #define DHCP_FQDN               0x51 /* 81: client asks to update DNS to map its FQDN to its new IP */
+#define DHCP_AUTH               0x5A /* 90: RFC 3118. Authentication for DHCP Messages */
 #define DHCP_PCODE              0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
 #define DHCP_TCODE              0x65 /* 101: RFC 4833. Reference to the TZ database string */
 #define DHCP_DOMAIN_SEARCH      0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
 #define DHCP_SIP_SERVERS        0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
 #define DHCP_STATIC_ROUTES      0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
+#define DHCP_VENDOR_IDENTIFYING 0x7d /* 125: RFC 3925. Vendor-Identifying Vendor Options for DHCPv4 */
 #define DHCP_VLAN_ID            0x84 /* 132: 802.1P VLAN ID */
 #define DHCP_VLAN_PRIORITY      0x85 /* 133: 802.1Q VLAN priority */
 #define DHCP_PXE_CONF_FILE      0xd1 /* 209: RFC 5071 Configuration file */
