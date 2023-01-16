@@ -134,56 +134,57 @@ struct dhcp_scan_state {
  */
 #define DHCP_PADDING            0x00
 #define DHCP_SUBNET             0x01
-//#define DHCP_TIME_OFFSET      0x02 /* (localtime - UTC_time) in seconds. signed */
+#define DHCP_TIME_OFFSET        0x02 /* (localtime - UTC_time) in seconds. signed */
 #define DHCP_ROUTER             0x03
-//#define DHCP_TIME_SERVER      0x04 /* RFC 868 time server (32-bit, 0 = 1.1.1900) */
-//#define DHCP_NAME_SERVER      0x05 /* IEN 116 _really_ ancient kind of NS */
-//#define DHCP_DNS_SERVER       0x06
-//#define DHCP_LOG_SERVER       0x07 /* port 704 UDP log (not syslog) */
-//#define DHCP_COOKIE_SERVER    0x08 /* "quote of the day" server */
-//#define DHCP_LPR_SERVER       0x09
+#define DHCP_TIME_SERVER        0x04 /* RFC 868 time server (32-bit, 0 = 1.1.1900) */
+#define DHCP_NAME_SERVER        0x05 /* IEN 116 _really_ ancient kind of NS */
+#define DHCP_DNS_SERVER         0x06
+#define DHCP_LOG_SERVER         0x07 /* port 704 UDP log (not syslog) */
+#define DHCP_COOKIE_SERVER      0x08 /* "quote of the day" server */
+#define DHCP_LPR_SERVER         0x09
 #define DHCP_HOST_NAME          0x0c /* 12: either client informs server or server gives name to client */
-//#define DHCP_BOOT_SIZE        0x0d
-//#define DHCP_DOMAIN_NAME      0x0f /* 15: server gives domain suffix */
-//#define DHCP_SWAP_SERVER      0x10
-//#define DHCP_ROOT_PATH        0x11
-//#define DHCP_IP_TTL           0x17
-//#define DHCP_MTU              0x1a
-//#define DHCP_BROADCAST        0x1c
-//#define DHCP_ROUTES           0x21
-//#define DHCP_NIS_DOMAIN       0x28
-//#define DHCP_NIS_SERVER       0x29
-//#define DHCP_NTP_SERVER       0x2a
-//#define DHCP_WINS_SERVER      0x2c
+#define DHCP_BOOT_SIZE          0x0d
+#define DHCP_DOMAIN_NAME        0x0f /* 15: server gives domain suffix */
+#define DHCP_SWAP_SERVER        0x10
+#define DHCP_ROOT_PATH          0x11
+#define DHCP_IP_TTL             0x17
+#define DHCP_MTU                0x1a
+#define DHCP_BROADCAST          0x1c
+#define DHCP_ROUTES             0x21
+#define DHCP_NIS_DOMAIN         0x28
+#define DHCP_NIS_SERVER         0x29
+#define DHCP_NTP_SERVER         0x2a
+#define DHCP_WINS_SERVER        0x2c
 #define DHCP_REQUESTED_IP       0x32 /* 50: sent by client if specific IP is wanted */
 #define DHCP_LEASE_TIME         0x33 /* 51: 32bit big-endian */
 #define DHCP_OPTION_OVERLOAD    0x34 /* 52: 1 byte */
 #define DHCP_MESSAGE_TYPE       0x35 /* 53: 1 byte */
 #define DHCP_SERVER_ID          0x36 /* 54: server's IP */
 #define DHCP_PARAM_REQ          0x37 /* 55: list of options client wants */
-//#define DHCP_ERR_MESSAGE      0x38 /* 56: error message when sending NAK etc */
+#define DHCP_ERR_MESSAGE        0x38 /* 56: error message when sending NAK etc */
 #define DHCP_MAX_SIZE           0x39 /* 57: 16bit big-endian */
 //                              0x3a /* 58: from server: renew time, 32bit big-endian */
 //                              0x3b /* 59: from server: rebind time, 32bit big-endian */
 #define DHCP_VENDOR             0x3c /* 60: client's vendor (a string) */
 #define DHCP_CLIENT_ID          0x3d /* 61: by default client's MAC addr, but may be arbitrarily long */
-//#define DHCP_TFTP_SERVER_NAME 0x42 /* 66: same as 'sname' field */
-//#define DHCP_BOOT_FILE        0x43 /* 67: same as 'file' field */
-//#define DHCP_USER_CLASS       0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
+#define DHCP_TFTP_SERVER_NAME   0x42 /* 66: same as 'sname' field */
+#define DHCP_BOOT_FILE          0x43 /* 67: same as 'file' field */
+#define DHCP_USER_CLASS         0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
 //                              0x50 /* 80: rapid commit ("I'm ok with getting immediate ACK, not just OFFER"), 0 bytes */
 #define DHCP_FQDN               0x51 /* 81: client asks to update DNS to map its FQDN to its new IP */
-//#define DHCP_PCODE            0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
-//#define DHCP_TCODE            0x65 /* 101: RFC 4833. Reference to the TZ database string */
-//#define DHCP_DOMAIN_SEARCH    0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
-//#define DHCP_SIP_SERVERS      0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
-//#define DHCP_STATIC_ROUTES    0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
-//#define DHCP_VLAN_ID          0x84 /* 132: 802.1P VLAN ID */
-//#define DHCP_VLAN_PRIORITY    0x85 /* 133: 802.1Q VLAN priority */
-//#define DHCP_PXE_CONF_FILE    0xd1 /* 209: RFC 5071 Configuration file */
-//#define DHCP_PXE_PATH_PREFIX  0xd2 /* 210: RFC 5071 Path prefix */
-//#define DHCP_REBOOT_TIME      0xd3 /* 211: RFC 5071 Reboot time */
-//#define DHCP_MS_STATIC_ROUTES 0xf9 /* 249: Microsoft's pre-RFC 3442 code for 0x79? */
-//#define DHCP_WPAD             0xfc /* 252: MSIE's Web Proxy Autodiscovery Protocol */
+#define DHCP_PCODE              0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
+#define DHCP_TCODE              0x65 /* 101: RFC 4833. Reference to the TZ database string */
+#define DHCP_DOMAIN_SEARCH      0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
+#define DHCP_SIP_SERVERS        0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
+#define DHCP_STATIC_ROUTES      0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
+#define DHCP_VLAN_ID            0x84 /* 132: 802.1P VLAN ID */
+#define DHCP_VLAN_PRIORITY      0x85 /* 133: 802.1Q VLAN priority */
+#define DHCP_PXE_CONF_FILE      0xd1 /* 209: RFC 5071 Configuration file */
+#define DHCP_PXE_PATH_PREFIX    0xd2 /* 210: RFC 5071 Path prefix */
+#define DHCP_REBOOT_TIME        0xd3 /* 211: RFC 5071 Reboot time */
+#define DHCP_6RD                0xd4 /* 212: RFC 5969 IPv6 Rapid Deployment on IPv4 Infrastructures */
+#define DHCP_MS_STATIC_ROUTES   0xf9 /* 249: Microsoft's pre-RFC 3442 code for 0x79? */
+#define DHCP_WPAD               0xfc /* 252: MSIE's Web Proxy Autodiscovery Protocol */
 #define DHCP_END                0xff /* 255: */
 
 /* Offsets in option byte sequence */

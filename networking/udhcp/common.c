@@ -21,57 +21,57 @@ const uint8_t MAC_BCAST_ADDR[6] ALIGN2 = {
  */
 const struct dhcp_optflag dhcp_optflags[] = {
 	/* flags                                    code */
-	{ OPTION_IP                   | OPTION_REQ, 0x01 }, /* DHCP_SUBNET        */
-	{ OPTION_S32                              , 0x02 }, /* DHCP_TIME_OFFSET   */
-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x03 }, /* DHCP_ROUTER        */
-//	{ OPTION_IP | OPTION_LIST                 , 0x04 }, /* DHCP_TIME_SERVER   */
-//	{ OPTION_IP | OPTION_LIST                 , 0x05 }, /* DHCP_NAME_SERVER   */
-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x06 }, /* DHCP_DNS_SERVER    */
-//	{ OPTION_IP | OPTION_LIST                 , 0x07 }, /* DHCP_LOG_SERVER    */
-//	{ OPTION_IP | OPTION_LIST                 , 0x08 }, /* DHCP_COOKIE_SERVER */
-	{ OPTION_IP | OPTION_LIST                 , 0x09 }, /* DHCP_LPR_SERVER    */
-	{ OPTION_STRING_HOST          | OPTION_REQ, 0x0c }, /* DHCP_HOST_NAME     */
-	{ OPTION_U16                              , 0x0d }, /* DHCP_BOOT_SIZE     */
-	{ OPTION_STRING_HOST          | OPTION_REQ, 0x0f }, /* DHCP_DOMAIN_NAME   */
-	{ OPTION_IP                               , 0x10 }, /* DHCP_SWAP_SERVER   */
-	{ OPTION_STRING                           , 0x11 }, /* DHCP_ROOT_PATH     */
-	{ OPTION_U8                               , 0x17 }, /* DHCP_IP_TTL        */
-	{ OPTION_U16                              , 0x1a }, /* DHCP_MTU           */
+	{ OPTION_IP                   | OPTION_REQ, DHCP_SUBNET },
+	{ OPTION_S32                              , DHCP_TIME_OFFSET },
+	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_ROUTER },
+//	{ OPTION_IP | OPTION_LIST                 , DHCP_TIME_SERVER },
+//	{ OPTION_IP | OPTION_LIST                 , DHCP_NAME_SERVER },
+	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_DNS_SERVER },
+//	{ OPTION_IP | OPTION_LIST                 , DHCP_LOG_SERVER },
+//	{ OPTION_IP | OPTION_LIST                 , DHCP_COOKIE_SERVER },
+	{ OPTION_IP | OPTION_LIST                 , DHCP_LPR_SERVER },
+	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_HOST_NAME },
+	{ OPTION_U16                              , DHCP_BOOT_SIZE },
+	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_DOMAIN_NAME },
+	{ OPTION_IP                               , DHCP_SWAP_SERVER },
+	{ OPTION_STRING                           , DHCP_ROOT_PATH },
+	{ OPTION_U8                               , DHCP_IP_TTL },
+	{ OPTION_U16                              , DHCP_MTU },
 //TODO: why do we request DHCP_BROADCAST? Can't we assume that
 //in the unlikely case it is different from typical N.N.255.255,
 //server would let us know anyway?
-	{ OPTION_IP                   | OPTION_REQ, 0x1c }, /* DHCP_BROADCAST     */
-	{ OPTION_IP_PAIR | OPTION_LIST            , 0x21 }, /* DHCP_ROUTES        */
-	{ OPTION_STRING_HOST                      , 0x28 }, /* DHCP_NIS_DOMAIN    */
-	{ OPTION_IP | OPTION_LIST                 , 0x29 }, /* DHCP_NIS_SERVER    */
-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x2a }, /* DHCP_NTP_SERVER    */
-	{ OPTION_IP | OPTION_LIST                 , 0x2c }, /* DHCP_WINS_SERVER   */
-	{ OPTION_U32                              , 0x33 }, /* DHCP_LEASE_TIME    */
-	{ OPTION_IP                               , 0x36 }, /* DHCP_SERVER_ID     */
-	{ OPTION_STRING                           , 0x38 }, /* DHCP_ERR_MESSAGE   */
-	{ OPTION_STRING                           , 0x3c }, /* DHCP_VENDOR        */
+	{ OPTION_IP                   | OPTION_REQ, DHCP_BROADCAST },
+	{ OPTION_IP_PAIR | OPTION_LIST            , DHCP_ROUTES },
+	{ OPTION_STRING_HOST                      , DHCP_NIS_DOMAIN },
+	{ OPTION_IP | OPTION_LIST                 , DHCP_NIS_SERVER },
+	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_NTP_SERVER },
+	{ OPTION_IP | OPTION_LIST                 , DHCP_WINS_SERVER },
+	{ OPTION_U32                              , DHCP_LEASE_TIME },
+	{ OPTION_IP                               , DHCP_SERVER_ID },
+	{ OPTION_STRING                           , DHCP_ERR_MESSAGE },
+	{ OPTION_STRING                           , DHCP_VENDOR },
 //TODO: must be combined with 'sname' and 'file' handling:
-	{ OPTION_STRING_HOST                      , 0x42 }, /* DHCP_TFTP_SERVER_NAME */
-	{ OPTION_STRING                           , 0x43 }, /* DHCP_BOOT_FILE     */
+	{ OPTION_STRING_HOST                      , DHCP_TFTP_SERVER_NAME },
+	{ OPTION_STRING                           , DHCP_BOOT_FILE },
 //TODO: not a string, but a set of LASCII strings:
-//	{ OPTION_STRING                           , 0x4D }, /* DHCP_USER_CLASS    */
-	{ OPTION_STRING                           , 0x64 }, /* DHCP_PCODE         */
-	{ OPTION_STRING                           , 0x65 }, /* DHCP_TCODE         */
+//	{ OPTION_STRING                           , DHCP_USER_CLASS },
+	{ OPTION_STRING                           , DHCP_PCODE },
+	{ OPTION_STRING                           , DHCP_TCODE },
 #if ENABLE_FEATURE_UDHCP_RFC3397
-	{ OPTION_DNS_STRING | OPTION_LIST         , 0x77 }, /* DHCP_DOMAIN_SEARCH */
-	{ OPTION_SIP_SERVERS                      , 0x78 }, /* DHCP_SIP_SERVERS   */
+	{ OPTION_DNS_STRING | OPTION_LIST         , DHCP_DOMAIN_SEARCH },
+	{ OPTION_SIP_SERVERS                      , DHCP_SIP_SERVERS },
 #endif
-	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0x79 }, /* DHCP_STATIC_ROUTES */
+	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_STATIC_ROUTES },
 #if ENABLE_FEATURE_UDHCP_8021Q
-	{ OPTION_U16                              , 0x84 }, /* DHCP_VLAN_ID       */
-	{ OPTION_U8                               , 0x85 }, /* DHCP_VLAN_PRIORITY */
+	{ OPTION_U16                              , DHCP_VLAN_ID },
+	{ OPTION_U8                               , DHCP_VLAN_PRIORITY },
 #endif
-	{ OPTION_STRING                           , 0xd1 }, /* DHCP_PXE_CONF_FILE */
-	{ OPTION_STRING                           , 0xd2 }, /* DHCP_PXE_PATH_PREFIX */
-	{ OPTION_U32                              , 0xd3 }, /* DHCP_REBOOT_TIME   */
-	{ OPTION_6RD                              , 0xd4 }, /* DHCP_6RD           */
-	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0xf9 }, /* DHCP_MS_STATIC_ROUTES */
-	{ OPTION_STRING                           , 0xfc }, /* DHCP_WPAD          */
+	{ OPTION_STRING                           , DHCP_PXE_CONF_FILE },
+	{ OPTION_STRING                           , DHCP_PXE_PATH_PREFIX },
+	{ OPTION_U32                              , DHCP_REBOOT_TIME },
+	{ OPTION_6RD                              , DHCP_6RD },
+	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_MS_STATIC_ROUTES },
+	{ OPTION_STRING                           , DHCP_WPAD },
 
 	/* Options below have no match in dhcp_option_strings[],
 	 * are not passed to dhcpc scripts, and cannot be specified
@@ -80,9 +80,9 @@ const struct dhcp_optflag dhcp_optflags[] = {
 	 * to correctly encode options into packets.
 	 */
 
-	{ OPTION_IP                               , 0x32 }, /* DHCP_REQUESTED_IP  */
-	{ OPTION_U8                               , 0x35 }, /* DHCP_MESSAGE_TYPE  */
-	{ OPTION_U16                              , 0x39 }, /* DHCP_MAX_SIZE      */
+	{ OPTION_IP                               , DHCP_REQUESTED_IP },
+	{ OPTION_U8                               , DHCP_MESSAGE_TYPE },
+	{ OPTION_U16                              , DHCP_MAX_SIZE },
 //looks like these opts will work just fine even without these defs:
 //	/* not really a string: */
 //	{ OPTION_STRING                           , 0x3d }, /* DHCP_CLIENT_ID     */
