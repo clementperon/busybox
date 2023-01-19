@@ -1,0 +1,88 @@
+From f8dcf4ab408a6d08842601489e1352b28b6e310b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Fri, 13 Jan 2023 18:11:28 +0100
+Subject: [PATCH 7/7] udhcp: change default dhcp requirements options
+
+---
+ networking/udhcp/common.c | 14 +++++++++-----
+ networking/udhcp/common.h |  6 ++++--
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/networking/udhcp/common.c b/networking/udhcp/common.c
+index 8f967e2f4..8a9080fb3 100644
+--- a/networking/udhcp/common.c
++++ b/networking/udhcp/common.c
+@@ -30,7 +30,7 @@ const struct dhcp_optflag dhcp_optflags[] = {
+ //	{ OPTION_IP | OPTION_LIST                 , DHCP_LOG_SERVER },
+ //	{ OPTION_IP | OPTION_LIST                 , DHCP_COOKIE_SERVER },
+ 	{ OPTION_IP | OPTION_LIST                 , DHCP_LPR_SERVER },
+-	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_HOST_NAME },
++	{ OPTION_STRING_HOST                      , DHCP_HOST_NAME },
+ 	{ OPTION_U16                              , DHCP_BOOT_SIZE },
+ 	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_DOMAIN_NAME },
+ 	{ OPTION_IP                               , DHCP_SWAP_SERVER },
+@@ -44,24 +44,28 @@ const struct dhcp_optflag dhcp_optflags[] = {
+ 	{ OPTION_IP_PAIR | OPTION_LIST            , DHCP_ROUTES },
+ 	{ OPTION_STRING_HOST                      , DHCP_NIS_DOMAIN },
+ 	{ OPTION_IP | OPTION_LIST                 , DHCP_NIS_SERVER },
+-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_NTP_SERVER },
++	{ OPTION_IP | OPTION_LIST                 , DHCP_NTP_SERVER },
+ 	{ OPTION_IP | OPTION_LIST                 , DHCP_WINS_SERVER },
+-	{ OPTION_U32                              , DHCP_LEASE_TIME },
++	{ OPTION_U32                  | OPTION_REQ, DHCP_LEASE_TIME },
+ 	{ OPTION_IP                               , DHCP_SERVER_ID },
+ 	{ OPTION_STRING                           , DHCP_ERR_MESSAGE },
++	{ OPTION_U32                  | OPTION_REQ, DHCP_RENEW_TIME },
++	{ OPTION_U32                  | OPTION_REQ, DHCP_REBIND_TIME },
+ 	{ OPTION_STRING                           , DHCP_VENDOR },
+ //TODO: must be combined with 'sname' and 'file' handling:
+ 	{ OPTION_STRING_HOST                      , DHCP_TFTP_SERVER_NAME },
+ 	{ OPTION_STRING                           , DHCP_BOOT_FILE },
+ //TODO: not a string, but a set of LASCII strings:
+ //	{ OPTION_STRING                           , DHCP_USER_CLASS },
++	{ OPTION_STRING               | OPTION_REQ, DHCP_AUTH },
+ 	{ OPTION_STRING                           , DHCP_PCODE },
+ 	{ OPTION_STRING                           , DHCP_TCODE },
+ #if ENABLE_FEATURE_UDHCP_RFC3397
+-	{ OPTION_DNS_STRING | OPTION_LIST         , DHCP_DOMAIN_SEARCH },
+-	{ OPTION_SIP_SERVERS                      , DHCP_SIP_SERVERS },
++	{ OPTION_DNS_STRING | OPTION_LIST | OPTION_REQ, DHCP_DOMAIN_SEARCH },
++	{ OPTION_SIP_SERVERS          | OPTION_REQ, DHCP_SIP_SERVERS },
+ #endif
+ 	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_STATIC_ROUTES },
++	{ OPTION_STRING               | OPTION_REQ, DHCP_VENDOR_IDENTIFYING},
+ #if ENABLE_FEATURE_UDHCP_8021Q
+ 	{ OPTION_U16                              , DHCP_VLAN_ID },
+ 	{ OPTION_U8                               , DHCP_VLAN_PRIORITY },
+diff --git a/networking/udhcp/common.h b/networking/udhcp/common.h
+index 66428c626..1a2622d30 100644
+--- a/networking/udhcp/common.h
++++ b/networking/udhcp/common.h
+@@ -163,8 +163,8 @@ struct dhcp_scan_state {
+ #define DHCP_PARAM_REQ          0x37 /* 55: list of options client wants */
+ #define DHCP_ERR_MESSAGE        0x38 /* 56: error message when sending NAK etc */
+ #define DHCP_MAX_SIZE           0x39 /* 57: 16bit big-endian */
+-//                              0x3a /* 58: from server: renew time, 32bit big-endian */
+-//                              0x3b /* 59: from server: rebind time, 32bit big-endian */
++#define DHCP_RENEW_TIME         0x3a /* 58: from server: renew time, 32bit big-endian */
++#define DHCP_REBIND_TIME        0x3b /* 59: from server: rebind time, 32bit big-endian */
+ #define DHCP_VENDOR             0x3c /* 60: client's vendor (a string) */
+ #define DHCP_CLIENT_ID          0x3d /* 61: by default client's MAC addr, but may be arbitrarily long */
+ #define DHCP_TFTP_SERVER_NAME   0x42 /* 66: same as 'sname' field */
+@@ -172,11 +172,13 @@ struct dhcp_scan_state {
+ #define DHCP_USER_CLASS         0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
+ //                              0x50 /* 80: rapid commit ("I'm ok with getting immediate ACK, not just OFFER"), 0 bytes */
+ #define DHCP_FQDN               0x51 /* 81: client asks to update DNS to map its FQDN to its new IP */
++#define DHCP_AUTH               0x5A /* 90: RFC 3118. Authentication for DHCP Messages */
+ #define DHCP_PCODE              0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
+ #define DHCP_TCODE              0x65 /* 101: RFC 4833. Reference to the TZ database string */
+ #define DHCP_DOMAIN_SEARCH      0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
+ #define DHCP_SIP_SERVERS        0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
+ #define DHCP_STATIC_ROUTES      0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
++#define DHCP_VENDOR_IDENTIFYING 0x7d /* 125: RFC 3925. Vendor-Identifying Vendor Options for DHCPv4 */
+ #define DHCP_VLAN_ID            0x84 /* 132: 802.1P VLAN ID */
+ #define DHCP_VLAN_PRIORITY      0x85 /* 133: 802.1Q VLAN priority */
+ #define DHCP_PXE_CONF_FILE      0xd1 /* 209: RFC 5071 Configuration file */
+-- 
+2.34.1
+

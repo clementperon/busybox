@@ -1,0 +1,51 @@
+From e0a3a11d8447a8c288f507714355d30afd9e4c5d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Tue, 27 Dec 2022 20:59:51 +0100
+Subject: [PATCH 4/7] udhcp: set DHCP messages CoS priority to 6
+
+---
+ networking/udhcp/dhcpc.c  | 3 +++
+ networking/udhcp/packet.c | 6 ++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/networking/udhcp/dhcpc.c b/networking/udhcp/dhcpc.c
+index cddc9c7ae..49721b2ef 100644
+--- a/networking/udhcp/dhcpc.c
++++ b/networking/udhcp/dhcpc.c
+@@ -1090,6 +1090,9 @@ static int udhcp_raw_socket(int ifindex)
+ 	}
+ #endif
+ 
++	/* Set Kernel Priority to 6 */
++	setsockopt_int(fd, SOL_SOCKET, SO_PRIORITY, 6);
++
+ 	if (setsockopt_1(fd, SOL_PACKET, PACKET_AUXDATA) != 0) {
+ 		if (errno != ENOPROTOOPT)
+ 			log1s("can't set PACKET_AUXDATA on raw socket");
+diff --git a/networking/udhcp/packet.c b/networking/udhcp/packet.c
+index 78f580ce9..e4315321d 100644
+--- a/networking/udhcp/packet.c
++++ b/networking/udhcp/packet.c
+@@ -121,6 +121,9 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
+ 		goto ret_msg;
+ 	}
+ 
++	/* Set Kernel Priority to 6 */
++	setsockopt_int(fd, SOL_SOCKET, SO_PRIORITY, 6);
++
+ 	memset(&dest_sll, 0, sizeof(dest_sll));
+ 	memset(&packet, 0, offsetof(struct ip_udp_dhcp_packet, data));
+ 	packet.data = *dhcp_pkt; /* struct copy */
+@@ -206,6 +209,9 @@ int FAST_FUNC udhcp_send_kernel_packet(struct dhcp_packet *dhcp_pkt,
+ 	}
+ 	setsockopt_reuseaddr(fd);
+ 
++	/* Set Kernel Priority to 6 */
++	setsockopt_int(fd, SOL_SOCKET, SO_PRIORITY, 6);
++
+ 	/* If interface carrier goes down, unless we
+ 	 * bind socket to a particular netdev, the packet
+ 	 * can go out through another interface, eg. via
+-- 
+2.34.1
+

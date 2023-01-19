@@ -1,0 +1,236 @@
+From fe4a0cfd19ba01f54b8aa54048fe6603418b35d5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Mon, 16 Jan 2023 15:22:30 +0100
+Subject: [PATCH 6/7] udhcp: use the define instead of value + comment
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+All the DHCP value are already properly defines but instead
+of using them we recopy the value and add a comment.
+
+Let's directly add the define when we can.
+
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ networking/udhcp/common.c | 90 +++++++++++++++++++--------------------
+ networking/udhcp/common.h | 71 +++++++++++++++---------------
+ 2 files changed, 81 insertions(+), 80 deletions(-)
+
+diff --git a/networking/udhcp/common.c b/networking/udhcp/common.c
+index 8e9b93655..8f967e2f4 100644
+--- a/networking/udhcp/common.c
++++ b/networking/udhcp/common.c
+@@ -21,57 +21,57 @@ const uint8_t MAC_BCAST_ADDR[6] ALIGN2 = {
+  */
+ const struct dhcp_optflag dhcp_optflags[] = {
+ 	/* flags                                    code */
+-	{ OPTION_IP                   | OPTION_REQ, 0x01 }, /* DHCP_SUBNET        */
+-	{ OPTION_S32                              , 0x02 }, /* DHCP_TIME_OFFSET   */
+-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x03 }, /* DHCP_ROUTER        */
+-//	{ OPTION_IP | OPTION_LIST                 , 0x04 }, /* DHCP_TIME_SERVER   */
+-//	{ OPTION_IP | OPTION_LIST                 , 0x05 }, /* DHCP_NAME_SERVER   */
+-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x06 }, /* DHCP_DNS_SERVER    */
+-//	{ OPTION_IP | OPTION_LIST                 , 0x07 }, /* DHCP_LOG_SERVER    */
+-//	{ OPTION_IP | OPTION_LIST                 , 0x08 }, /* DHCP_COOKIE_SERVER */
+-	{ OPTION_IP | OPTION_LIST                 , 0x09 }, /* DHCP_LPR_SERVER    */
+-	{ OPTION_STRING_HOST          | OPTION_REQ, 0x0c }, /* DHCP_HOST_NAME     */
+-	{ OPTION_U16                              , 0x0d }, /* DHCP_BOOT_SIZE     */
+-	{ OPTION_STRING_HOST          | OPTION_REQ, 0x0f }, /* DHCP_DOMAIN_NAME   */
+-	{ OPTION_IP                               , 0x10 }, /* DHCP_SWAP_SERVER   */
+-	{ OPTION_STRING                           , 0x11 }, /* DHCP_ROOT_PATH     */
+-	{ OPTION_U8                               , 0x17 }, /* DHCP_IP_TTL        */
+-	{ OPTION_U16                              , 0x1a }, /* DHCP_MTU           */
++	{ OPTION_IP                   | OPTION_REQ, DHCP_SUBNET },
++	{ OPTION_S32                              , DHCP_TIME_OFFSET },
++	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_ROUTER },
++//	{ OPTION_IP | OPTION_LIST                 , DHCP_TIME_SERVER },
++//	{ OPTION_IP | OPTION_LIST                 , DHCP_NAME_SERVER },
++	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_DNS_SERVER },
++//	{ OPTION_IP | OPTION_LIST                 , DHCP_LOG_SERVER },
++//	{ OPTION_IP | OPTION_LIST                 , DHCP_COOKIE_SERVER },
++	{ OPTION_IP | OPTION_LIST                 , DHCP_LPR_SERVER },
++	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_HOST_NAME },
++	{ OPTION_U16                              , DHCP_BOOT_SIZE },
++	{ OPTION_STRING_HOST          | OPTION_REQ, DHCP_DOMAIN_NAME },
++	{ OPTION_IP                               , DHCP_SWAP_SERVER },
++	{ OPTION_STRING                           , DHCP_ROOT_PATH },
++	{ OPTION_U8                               , DHCP_IP_TTL },
++	{ OPTION_U16                              , DHCP_MTU },
+ //TODO: why do we request DHCP_BROADCAST? Can't we assume that
+ //in the unlikely case it is different from typical N.N.255.255,
+ //server would let us know anyway?
+-	{ OPTION_IP                   | OPTION_REQ, 0x1c }, /* DHCP_BROADCAST     */
+-	{ OPTION_IP_PAIR | OPTION_LIST            , 0x21 }, /* DHCP_ROUTES        */
+-	{ OPTION_STRING_HOST                      , 0x28 }, /* DHCP_NIS_DOMAIN    */
+-	{ OPTION_IP | OPTION_LIST                 , 0x29 }, /* DHCP_NIS_SERVER    */
+-	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, 0x2a }, /* DHCP_NTP_SERVER    */
+-	{ OPTION_IP | OPTION_LIST                 , 0x2c }, /* DHCP_WINS_SERVER   */
+-	{ OPTION_U32                              , 0x33 }, /* DHCP_LEASE_TIME    */
+-	{ OPTION_IP                               , 0x36 }, /* DHCP_SERVER_ID     */
+-	{ OPTION_STRING                           , 0x38 }, /* DHCP_ERR_MESSAGE   */
+-	{ OPTION_STRING                           , 0x3c }, /* DHCP_VENDOR        */
++	{ OPTION_IP                   | OPTION_REQ, DHCP_BROADCAST },
++	{ OPTION_IP_PAIR | OPTION_LIST            , DHCP_ROUTES },
++	{ OPTION_STRING_HOST                      , DHCP_NIS_DOMAIN },
++	{ OPTION_IP | OPTION_LIST                 , DHCP_NIS_SERVER },
++	{ OPTION_IP | OPTION_LIST     | OPTION_REQ, DHCP_NTP_SERVER },
++	{ OPTION_IP | OPTION_LIST                 , DHCP_WINS_SERVER },
++	{ OPTION_U32                              , DHCP_LEASE_TIME },
++	{ OPTION_IP                               , DHCP_SERVER_ID },
++	{ OPTION_STRING                           , DHCP_ERR_MESSAGE },
++	{ OPTION_STRING                           , DHCP_VENDOR },
+ //TODO: must be combined with 'sname' and 'file' handling:
+-	{ OPTION_STRING_HOST                      , 0x42 }, /* DHCP_TFTP_SERVER_NAME */
+-	{ OPTION_STRING                           , 0x43 }, /* DHCP_BOOT_FILE     */
++	{ OPTION_STRING_HOST                      , DHCP_TFTP_SERVER_NAME },
++	{ OPTION_STRING                           , DHCP_BOOT_FILE },
+ //TODO: not a string, but a set of LASCII strings:
+-//	{ OPTION_STRING                           , 0x4D }, /* DHCP_USER_CLASS    */
+-	{ OPTION_STRING                           , 0x64 }, /* DHCP_PCODE         */
+-	{ OPTION_STRING                           , 0x65 }, /* DHCP_TCODE         */
++//	{ OPTION_STRING                           , DHCP_USER_CLASS },
++	{ OPTION_STRING                           , DHCP_PCODE },
++	{ OPTION_STRING                           , DHCP_TCODE },
+ #if ENABLE_FEATURE_UDHCP_RFC3397
+-	{ OPTION_DNS_STRING | OPTION_LIST         , 0x77 }, /* DHCP_DOMAIN_SEARCH */
+-	{ OPTION_SIP_SERVERS                      , 0x78 }, /* DHCP_SIP_SERVERS   */
++	{ OPTION_DNS_STRING | OPTION_LIST         , DHCP_DOMAIN_SEARCH },
++	{ OPTION_SIP_SERVERS                      , DHCP_SIP_SERVERS },
+ #endif
+-	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0x79 }, /* DHCP_STATIC_ROUTES */
++	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_STATIC_ROUTES },
+ #if ENABLE_FEATURE_UDHCP_8021Q
+-	{ OPTION_U16                              , 0x84 }, /* DHCP_VLAN_ID       */
+-	{ OPTION_U8                               , 0x85 }, /* DHCP_VLAN_PRIORITY */
++	{ OPTION_U16                              , DHCP_VLAN_ID },
++	{ OPTION_U8                               , DHCP_VLAN_PRIORITY },
+ #endif
+-	{ OPTION_STRING                           , 0xd1 }, /* DHCP_PXE_CONF_FILE */
+-	{ OPTION_STRING                           , 0xd2 }, /* DHCP_PXE_PATH_PREFIX */
+-	{ OPTION_U32                              , 0xd3 }, /* DHCP_REBOOT_TIME   */
+-	{ OPTION_6RD                              , 0xd4 }, /* DHCP_6RD           */
+-	{ OPTION_STATIC_ROUTES | OPTION_LIST      , 0xf9 }, /* DHCP_MS_STATIC_ROUTES */
+-	{ OPTION_STRING                           , 0xfc }, /* DHCP_WPAD          */
++	{ OPTION_STRING                           , DHCP_PXE_CONF_FILE },
++	{ OPTION_STRING                           , DHCP_PXE_PATH_PREFIX },
++	{ OPTION_U32                              , DHCP_REBOOT_TIME },
++	{ OPTION_6RD                              , DHCP_6RD },
++	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_MS_STATIC_ROUTES },
++	{ OPTION_STRING                           , DHCP_WPAD },
+ 
+ 	/* Options below have no match in dhcp_option_strings[],
+ 	 * are not passed to dhcpc scripts, and cannot be specified
+@@ -80,9 +80,9 @@ const struct dhcp_optflag dhcp_optflags[] = {
+ 	 * to correctly encode options into packets.
+ 	 */
+ 
+-	{ OPTION_IP                               , 0x32 }, /* DHCP_REQUESTED_IP  */
+-	{ OPTION_U8                               , 0x35 }, /* DHCP_MESSAGE_TYPE  */
+-	{ OPTION_U16                              , 0x39 }, /* DHCP_MAX_SIZE      */
++	{ OPTION_IP                               , DHCP_REQUESTED_IP },
++	{ OPTION_U8                               , DHCP_MESSAGE_TYPE },
++	{ OPTION_U16                              , DHCP_MAX_SIZE },
+ //looks like these opts will work just fine even without these defs:
+ //	/* not really a string: */
+ //	{ OPTION_STRING                           , 0x3d }, /* DHCP_CLIENT_ID     */
+diff --git a/networking/udhcp/common.h b/networking/udhcp/common.h
+index a85cb5127..66428c626 100644
+--- a/networking/udhcp/common.h
++++ b/networking/udhcp/common.h
+@@ -134,56 +134,57 @@ struct dhcp_scan_state {
+  */
+ #define DHCP_PADDING            0x00
+ #define DHCP_SUBNET             0x01
+-//#define DHCP_TIME_OFFSET      0x02 /* (localtime - UTC_time) in seconds. signed */
++#define DHCP_TIME_OFFSET        0x02 /* (localtime - UTC_time) in seconds. signed */
+ #define DHCP_ROUTER             0x03
+-//#define DHCP_TIME_SERVER      0x04 /* RFC 868 time server (32-bit, 0 = 1.1.1900) */
+-//#define DHCP_NAME_SERVER      0x05 /* IEN 116 _really_ ancient kind of NS */
+-//#define DHCP_DNS_SERVER       0x06
+-//#define DHCP_LOG_SERVER       0x07 /* port 704 UDP log (not syslog) */
+-//#define DHCP_COOKIE_SERVER    0x08 /* "quote of the day" server */
+-//#define DHCP_LPR_SERVER       0x09
++#define DHCP_TIME_SERVER        0x04 /* RFC 868 time server (32-bit, 0 = 1.1.1900) */
++#define DHCP_NAME_SERVER        0x05 /* IEN 116 _really_ ancient kind of NS */
++#define DHCP_DNS_SERVER         0x06
++#define DHCP_LOG_SERVER         0x07 /* port 704 UDP log (not syslog) */
++#define DHCP_COOKIE_SERVER      0x08 /* "quote of the day" server */
++#define DHCP_LPR_SERVER         0x09
+ #define DHCP_HOST_NAME          0x0c /* 12: either client informs server or server gives name to client */
+-//#define DHCP_BOOT_SIZE        0x0d
+-//#define DHCP_DOMAIN_NAME      0x0f /* 15: server gives domain suffix */
+-//#define DHCP_SWAP_SERVER      0x10
+-//#define DHCP_ROOT_PATH        0x11
+-//#define DHCP_IP_TTL           0x17
+-//#define DHCP_MTU              0x1a
+-//#define DHCP_BROADCAST        0x1c
+-//#define DHCP_ROUTES           0x21
+-//#define DHCP_NIS_DOMAIN       0x28
+-//#define DHCP_NIS_SERVER       0x29
+-//#define DHCP_NTP_SERVER       0x2a
+-//#define DHCP_WINS_SERVER      0x2c
++#define DHCP_BOOT_SIZE          0x0d
++#define DHCP_DOMAIN_NAME        0x0f /* 15: server gives domain suffix */
++#define DHCP_SWAP_SERVER        0x10
++#define DHCP_ROOT_PATH          0x11
++#define DHCP_IP_TTL             0x17
++#define DHCP_MTU                0x1a
++#define DHCP_BROADCAST          0x1c
++#define DHCP_ROUTES             0x21
++#define DHCP_NIS_DOMAIN         0x28
++#define DHCP_NIS_SERVER         0x29
++#define DHCP_NTP_SERVER         0x2a
++#define DHCP_WINS_SERVER        0x2c
+ #define DHCP_REQUESTED_IP       0x32 /* 50: sent by client if specific IP is wanted */
+ #define DHCP_LEASE_TIME         0x33 /* 51: 32bit big-endian */
+ #define DHCP_OPTION_OVERLOAD    0x34 /* 52: 1 byte */
+ #define DHCP_MESSAGE_TYPE       0x35 /* 53: 1 byte */
+ #define DHCP_SERVER_ID          0x36 /* 54: server's IP */
+ #define DHCP_PARAM_REQ          0x37 /* 55: list of options client wants */
+-//#define DHCP_ERR_MESSAGE      0x38 /* 56: error message when sending NAK etc */
++#define DHCP_ERR_MESSAGE        0x38 /* 56: error message when sending NAK etc */
+ #define DHCP_MAX_SIZE           0x39 /* 57: 16bit big-endian */
+ //                              0x3a /* 58: from server: renew time, 32bit big-endian */
+ //                              0x3b /* 59: from server: rebind time, 32bit big-endian */
+ #define DHCP_VENDOR             0x3c /* 60: client's vendor (a string) */
+ #define DHCP_CLIENT_ID          0x3d /* 61: by default client's MAC addr, but may be arbitrarily long */
+-//#define DHCP_TFTP_SERVER_NAME 0x42 /* 66: same as 'sname' field */
+-//#define DHCP_BOOT_FILE        0x43 /* 67: same as 'file' field */
+-//#define DHCP_USER_CLASS       0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
++#define DHCP_TFTP_SERVER_NAME   0x42 /* 66: same as 'sname' field */
++#define DHCP_BOOT_FILE          0x43 /* 67: same as 'file' field */
++#define DHCP_USER_CLASS         0x4d /* 77: RFC 3004. set of LASCII strings. "I am a printer" etc */
+ //                              0x50 /* 80: rapid commit ("I'm ok with getting immediate ACK, not just OFFER"), 0 bytes */
+ #define DHCP_FQDN               0x51 /* 81: client asks to update DNS to map its FQDN to its new IP */
+-//#define DHCP_PCODE            0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
+-//#define DHCP_TCODE            0x65 /* 101: RFC 4833. Reference to the TZ database string */
+-//#define DHCP_DOMAIN_SEARCH    0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
+-//#define DHCP_SIP_SERVERS      0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
+-//#define DHCP_STATIC_ROUTES    0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
+-//#define DHCP_VLAN_ID          0x84 /* 132: 802.1P VLAN ID */
+-//#define DHCP_VLAN_PRIORITY    0x85 /* 133: 802.1Q VLAN priority */
+-//#define DHCP_PXE_CONF_FILE    0xd1 /* 209: RFC 5071 Configuration file */
+-//#define DHCP_PXE_PATH_PREFIX  0xd2 /* 210: RFC 5071 Path prefix */
+-//#define DHCP_REBOOT_TIME      0xd3 /* 211: RFC 5071 Reboot time */
+-//#define DHCP_MS_STATIC_ROUTES 0xf9 /* 249: Microsoft's pre-RFC 3442 code for 0x79? */
+-//#define DHCP_WPAD             0xfc /* 252: MSIE's Web Proxy Autodiscovery Protocol */
++#define DHCP_PCODE              0x64 /* 100: RFC 4833. IEEE 1003.1 TZ string */
++#define DHCP_TCODE              0x65 /* 101: RFC 4833. Reference to the TZ database string */
++#define DHCP_DOMAIN_SEARCH      0x77 /* 119: RFC 3397. set of ASCIZ string, DNS-style compressed */
++#define DHCP_SIP_SERVERS        0x78 /* 120: RFC 3361. flag byte, then: 0: domain names, 1: IP addrs */
++#define DHCP_STATIC_ROUTES      0x79 /* 121: RFC 3442. (mask,ip,router) tuples */
++#define DHCP_VLAN_ID            0x84 /* 132: 802.1P VLAN ID */
++#define DHCP_VLAN_PRIORITY      0x85 /* 133: 802.1Q VLAN priority */
++#define DHCP_PXE_CONF_FILE      0xd1 /* 209: RFC 5071 Configuration file */
++#define DHCP_PXE_PATH_PREFIX    0xd2 /* 210: RFC 5071 Path prefix */
++#define DHCP_REBOOT_TIME        0xd3 /* 211: RFC 5071 Reboot time */
++#define DHCP_6RD                0xd4 /* 212: RFC 5969 IPv6 Rapid Deployment on IPv4 Infrastructures */
++#define DHCP_MS_STATIC_ROUTES   0xf9 /* 249: Microsoft's pre-RFC 3442 code for 0x79? */
++#define DHCP_WPAD               0xfc /* 252: MSIE's Web Proxy Autodiscovery Protocol */
+ #define DHCP_END                0xff /* 255: */
+ 
+ /* Offsets in option byte sequence */
+-- 
+2.34.1
+

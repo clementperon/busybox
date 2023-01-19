@@ -17,3 +17,6 @@ use-libresolv-on-non-linux-too.patch
 ubnt-dhcp-decline-feature
 ubnt-min-lease-time-6-sec
 udhpc-omit-vendor-class-identifier
+udhcp-set-DHCP-messages-CoS-priority-to-6
+udhcp-use-the-define-instead-of-value-comment
+udhcp-change-default-dhcp-requirements-options
