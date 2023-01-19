@@ -1,0 +1,25 @@
+From eb3834771175d64d0d3efbfa79cc14f435116ab4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Tue, 27 Dec 2022 21:00:36 +0100
+Subject: [PATCH 3/7] 0003-udhpc-omit-vendor-class-identifier.patch
+
+---
+ networking/udhcp/dhcpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/networking/udhcp/dhcpc.c b/networking/udhcp/dhcpc.c
+index f3e4bd737..cddc9c7ae 100644
+--- a/networking/udhcp/dhcpc.c
++++ b/networking/udhcp/dhcpc.c
+@@ -1290,7 +1290,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
+ 	client_data.interface = CONFIG_UDHCPC_DEFAULT_INTERFACE;
+ 	client_data.script = CONFIG_UDHCPC_DEFAULT_SCRIPT;
+ 	client_data.sockfd = -1;
+-	str_V = "udhcp "BB_VER;
++	str_V = "";
+ 	IF_FEATURE_UDHCPC_DECLINE(
+ 		client_data.decline_script = CONFIG_UDHCPC_DEFAULT_DECLINE_SCRIPT;
+ 	)
+-- 
+2.34.1
+
