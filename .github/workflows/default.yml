@@ -1,0 +1,62 @@
+name: Build for Ubiquiti
+on: [push]
+
+jobs:
+  build-from-debian-amd64:
+    runs-on: ubuntu-latest
+    container: debian:11
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install Prerequisites
+        run: apt update && apt install -y dpkg-dev devscripts
+
+      - name: Enable SRC packages
+        run: echo "deb-src http://deb.debian.org/debian bookworm main" >> "/etc/apt/sources.list"
+
+      - name: Install Busybox requirements
+        run: apt update && apt build-dep -y busybox=1:1.35.0-4
+
+      - name: Build the package
+        run: |
+          debuild -b --no-sign
+          mv ../*.deb ./
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v3
+        with:
+          name: busybox-artifacts-amd64
+          path: ${{ github.workspace }}/*.deb
+
+  build-from-debian-arm64:
+    runs-on: ubuntu-latest
+    container: debian:11
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install Prerequisites
+        run: |
+          dpkg --add-architecture arm64
+          apt update && apt install -y crossbuild-essential-arm64 libc-dev:arm64 dpkg-dev devscripts
+
+      - name: Enable SRC packages
+        run: echo "deb-src http://deb.debian.org/debian bookworm main" >> "/etc/apt/sources.list"
+
+      - name: Download Busybox source
+        run: apt update && apt build-dep -aarm64 -y busybox=1:1.35.0-4
+
+      - name: Patch and cross-compile the package
+        run: |
+          export DEB_BUILD_OPTIONS=nocheck
+          debuild -aarm64 -b --no-sign
+          mv ../*.deb ./
+
+      - name: Upload the package
+        uses: actions/upload-artifact@v3
+        with:
+          name: busybox-artifacts-arm64
+          path: ${{ github.workspace }}/*.deb
