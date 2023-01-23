@@ -1,7 +1,7 @@
-From fe4a0cfd19ba01f54b8aa54048fe6603418b35d5 Mon Sep 17 00:00:00 2001
+From 025564b01082725be58a4d4d97d00701f1703821 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Mon, 16 Jan 2023 15:22:30 +0100
-Subject: [PATCH 6/7] udhcp: use the define instead of value + comment
+Subject: udhcp: use the define instead of value + comment
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -12,10 +12,6 @@ of using them we recopy the value and add a comment.
 Let's directly add the define when we can.
 
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- networking/udhcp/common.c | 90 +++++++++++++++++++--------------------
- networking/udhcp/common.h | 71 +++++++++++++++---------------
- 2 files changed, 81 insertions(+), 80 deletions(-)
 
 diff --git a/networking/udhcp/common.c b/networking/udhcp/common.c
 index 8e9b93655..8f967e2f4 100644
@@ -231,6 +227,3 @@ index a85cb5127..66428c626 100644
  #define DHCP_END                0xff /* 255: */
  
  /* Offsets in option byte sequence */
--- 
-2.34.1
-

@@ -1,11 +1,14 @@
-Subject: build-sys: allow override of BB_BT (build tag) from command line
+From 44a288f15c7ff74a81e728b30110c9f5cbbfa071 Mon Sep 17 00:00:00 2001
 From: Bastian Blank <waldi@debian.org>
-Date: Fri Mar 28 14:13:30 2008 +0000
-Forwarded: no
+Date: Fri, 28 Mar 2008 14:13:30 +0000
+Subject: build-sys: allow override of BB_BT (build tag) from command line
 
+
+diff --git a/Makefile.flags b/Makefile.flags
+index c34356230..158aa32f4 100644
 --- a/Makefile.flags
 +++ b/Makefile.flags
-@@ -17,6 +17,10 @@
+@@ -17,6 +17,10 @@ CPPFLAGS += \
  	$(if $(CONFIG_LFS),-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64) \
  	-DBB_VER=$(squote)$(quote)$(BB_VER)$(quote)$(squote)
  
@@ -16,6 +19,8 @@ Forwarded: no
  CFLAGS += $(call cc-option,-Wall,)
  CFLAGS += $(call cc-option,-Wshadow,)
  CFLAGS += $(call cc-option,-Wwrite-strings,)
+diff --git a/libbb/messages.c b/libbb/messages.c
+index a25d10378..8bc1be3a6 100644
 --- a/libbb/messages.c
 +++ b/libbb/messages.c
 @@ -7,8 +7,11 @@
