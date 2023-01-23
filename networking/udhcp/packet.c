@@ -158,9 +158,13 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
 	if (padding > DHCP_SIZE - 300)
 		padding = DHCP_SIZE - 300;
 
+	#define IPTOS_DSCP_CS6 0xc0
+
 	packet.ip.protocol = IPPROTO_UDP;
 	packet.ip.saddr = source_nip;
 	packet.ip.daddr = dest_nip;
+	packet.ip.tos = IPTOS_DSCP_CS6;
+
 	packet.udp.source = htons(source_port);
 	packet.udp.dest = htons(dest_port);
 	/* size, excluding IP header: */
