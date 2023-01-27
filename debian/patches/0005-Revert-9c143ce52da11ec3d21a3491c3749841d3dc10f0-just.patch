@@ -1,9 +1,15 @@
+From 190969cb28e7f1b167745ac1763a3c5934fe1a5e Mon Sep 17 00:00:00 2001
 From: Cyril Brulebois <kibi@debian.org>
 Date: Fri, 29 Mar 2019 17:42:23 +0100
-Subject: Revert 9c143ce52da11ec3d21a3491c3749841d3dc10f0 just to make sure the next patch can be applied
+Subject: Revert 9c143ce52da11ec3d21a3491c3749841d3dc10f0 just to make sure the
+ next patch can be applied
+
+
+diff --git a/shell/ash.c b/shell/ash.c
+index aeccd9aa9..875403295 100644
 --- a/shell/ash.c
 +++ b/shell/ash.c
-@@ -11477,17 +11477,9 @@
+@@ -11477,17 +11477,9 @@ showvars(const char *sep_prefix, int on, int off)
  		const char *p;
  		const char *q;
  
@@ -23,7 +29,7 @@ Subject: Revert 9c143ce52da11ec3d21a3491c3749841d3dc10f0 just to make sure the n
  			q = single_quote(++p);
  		out1fmt("%s%s%.*s%s\n", sep_prefix, sep, (int)(p - *ep), *ep, q);
  	}
-@@ -14409,18 +14401,8 @@
+@@ -14409,18 +14401,8 @@ init(void)
  
  		initvar();
  		for (envp = environ; envp && *envp; envp++) {

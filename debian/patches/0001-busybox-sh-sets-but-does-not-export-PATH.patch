@@ -1,9 +1,7 @@
-Subject: busybox sh sets but does not export PATH
+From 0fc36a20d47e6e1669e3d7d20ad12555f22c222c Mon Sep 17 00:00:00 2001
 From: Joey Hess <joeyh@debian.org>
-Date: Sun, 07 May 2006 14:47:16 -0700
-Bug-Debian: https://bugs.debian.org/329406
-Bug-Debian: https://bugs.debian.org/679377
-Forwarded: no
+Date: Sun, 7 May 2006 14:47:16 -0700
+Subject: busybox sh sets but does not export PATH
 
 This patch exports $PATH variable from busybox ash by default,
 even if no "export PATH" statement has been processed.  No
@@ -52,20 +50,11 @@ now, we will live with this simple and ugly forkaround.
 
 /mjt
 
---- a/shell/ash.c
-+++ b/shell/ash.c
-@@ -2134,7 +2134,7 @@
- 	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAIL"      , changemail      },
- 	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAILPATH"  , changemail      },
- #endif
--	{ VSTRFIXED|VTEXTFIXED       , bb_PATH_root_path, changepath },
-+	{ VSTRFIXED|VTEXTFIXED|VEXPORT, bb_PATH_root_path, changepath },
- 	{ VSTRFIXED|VTEXTFIXED       , "PS1=$ "    , NULL            },
- 	{ VSTRFIXED|VTEXTFIXED       , "PS2=> "    , NULL            },
- 	{ VSTRFIXED|VTEXTFIXED       , "PS4=+ "    , NULL            },
+diff --git a/include/libbb.h b/include/libbb.h
+index a48782832..4949aba6b 100644
 --- a/include/libbb.h
 +++ b/include/libbb.h
-@@ -2264,7 +2264,7 @@
+@@ -2264,7 +2264,7 @@ extern const char bb_busybox_exec_path[] ALIGN1;
  #define BB_ADDITIONAL_PATH ""
  #endif
  #define BB_PATH_ROOT_PATH "PATH=/sbin:/usr/sbin:/bin:/usr/bin" BB_ADDITIONAL_PATH
@@ -74,9 +63,11 @@ now, we will live with this simple and ugly forkaround.
  #define bb_default_root_path (bb_PATH_root_path + sizeof("PATH"))
  /* util-linux manpage says /sbin:/bin:/usr/sbin:/usr/bin,
   * but I want to save a few bytes here:
+diff --git a/libbb/messages.c b/libbb/messages.c
+index 6914d5701..a25d10378 100644
 --- a/libbb/messages.c
 +++ b/libbb/messages.c
-@@ -31,7 +31,7 @@
+@@ -31,7 +31,7 @@ const char bb_busybox_exec_path[] ALIGN1 = CONFIG_BUSYBOX_EXEC_PATH;
  const char bb_default_login_shell[] ALIGN1 = LIBBB_DEFAULT_LOGIN_SHELL;
  /* util-linux manpage says /sbin:/bin:/usr/sbin:/usr/bin,
   * but I want to save a few bytes here. Check libbb.h before changing! */
@@ -85,3 +76,16 @@ now, we will live with this simple and ugly forkaround.
  
  
  //const int const_int_1 = 1;
+diff --git a/shell/ash.c b/shell/ash.c
+index 827643808..aeccd9aa9 100644
+--- a/shell/ash.c
++++ b/shell/ash.c
+@@ -2134,7 +2134,7 @@ static const struct {
+ 	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAIL"      , changemail      },
+ 	{ VSTRFIXED|VTEXTFIXED|VUNSET, "MAILPATH"  , changemail      },
+ #endif
+-	{ VSTRFIXED|VTEXTFIXED       , bb_PATH_root_path, changepath },
++	{ VSTRFIXED|VTEXTFIXED|VEXPORT, bb_PATH_root_path, changepath },
+ 	{ VSTRFIXED|VTEXTFIXED       , "PS1=$ "    , NULL            },
+ 	{ VSTRFIXED|VTEXTFIXED       , "PS2=> "    , NULL            },
+ 	{ VSTRFIXED|VTEXTFIXED       , "PS4=+ "    , NULL            },

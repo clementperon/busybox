@@ -1,12 +1,8 @@
-From f8dcf4ab408a6d08842601489e1352b28b6e310b Mon Sep 17 00:00:00 2001
+From e9ed81bfbee222862d8efc38c119275bf9a6e401 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Fri, 13 Jan 2023 18:11:28 +0100
-Subject: [PATCH 7/7] udhcp: change default dhcp requirements options
+Subject: udhcp: change default dhcp requirements options
 
----
- networking/udhcp/common.c | 14 +++++++++-----
- networking/udhcp/common.h |  6 ++++--
- 2 files changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/networking/udhcp/common.c b/networking/udhcp/common.c
 index 8f967e2f4..8a9080fb3 100644
@@ -83,6 +79,3 @@ index 66428c626..1a2622d30 100644
  #define DHCP_VLAN_ID            0x84 /* 132: 802.1P VLAN ID */
  #define DHCP_VLAN_PRIORITY      0x85 /* 133: 802.1Q VLAN priority */
  #define DHCP_PXE_CONF_FILE      0xd1 /* 209: RFC 5071 Configuration file */
--- 
-2.34.1
-

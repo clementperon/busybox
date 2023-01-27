@@ -1,0 +1,24 @@
+From 9f5ad8e59d99268db0566d614cb03032d8cb0cdb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Mon, 23 Jan 2023 16:00:25 +0100
+Subject: Add IP ToS
+
+
+diff --git a/networking/udhcp/packet.c b/networking/udhcp/packet.c
+index e4315321d..988bcc175 100644
+--- a/networking/udhcp/packet.c
++++ b/networking/udhcp/packet.c
+@@ -159,9 +159,13 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
+ 	if (padding > DHCP_SIZE - 300)
+ 		padding = DHCP_SIZE - 300;
+ 
++	#define IPTOS_DSCP_CS6 0xc0
++
+ 	packet.ip.protocol = IPPROTO_UDP;
+ 	packet.ip.saddr = source_nip;
+ 	packet.ip.daddr = dest_nip;
++	packet.ip.tos = IPTOS_DSCP_CS6;
++
+ 	packet.udp.source = htons(source_port);
+ 	packet.udp.dest = htons(dest_port);
+ 	/* size, excluding IP header: */

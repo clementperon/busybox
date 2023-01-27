@@ -1,11 +1,8 @@
-From f39543a45e38ecc08067a94a23fd4101484f42df Mon Sep 17 00:00:00 2001
+From 529dfb8cf9c77fb21d7d7acf77bb69894c5e5eb5 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Tue, 27 Dec 2022 21:00:30 +0100
-Subject: [PATCH 2/7] 0002-ubnt-min-lease-time-6-sec.patch
+Subject: 0002-ubnt-min-lease-time-6-sec.patch
 
----
- networking/udhcp/dhcpc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/networking/udhcp/dhcpc.c b/networking/udhcp/dhcpc.c
 index d5ebcb4b4..f3e4bd737 100644
@@ -22,6 +19,3 @@ index d5ebcb4b4..f3e4bd737 100644
  				requested_ip = packet.yiaddr;
  #if ENABLE_FEATURE_UDHCPC_ARPING
  				if (opt & OPT_a) {
--- 
-2.34.1
-

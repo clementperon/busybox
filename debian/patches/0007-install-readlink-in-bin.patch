@@ -1,3 +1,11 @@
+From b1c621e413971761340fb21285586e3f0ade6ac5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Mon, 23 Jan 2023 15:58:38 +0100
+Subject: install-readlink-in-bin
+
+
+diff --git a/coreutils/readlink.c b/coreutils/readlink.c
+index 09d69df2b..81dc6a66c 100644
 --- a/coreutils/readlink.c
 +++ b/coreutils/readlink.c
 @@ -20,7 +20,7 @@

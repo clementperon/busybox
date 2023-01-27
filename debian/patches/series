@@ -3,20 +3,21 @@
 # swaponoff-FreeBSD-support.patch
 
 # other patches
-shell-ash-export-HOME.patch
-version.patch
-init-console.patch
-stop-checking-ancient-kernel-version.patch
-revert-9c143ce52da11ec3d21a3491c3749841d3dc10f0.patch
-temp-deb-installer-hack.patch
-install-readlink-in-bin.patch
-spelling.diff
-platform-linux.diff
-fix-non-linux-build.patch
-use-libresolv-on-non-linux-too.patch
-ubnt-dhcp-decline-feature
-ubnt-min-lease-time-6-sec
-udhpc-omit-vendor-class-identifier
-udhcp-set-DHCP-messages-CoS-priority-to-6
-udhcp-use-the-define-instead-of-value-comment
-udhcp-change-default-dhcp-requirements-options
+0001-busybox-sh-sets-but-does-not-export-PATH.patch
+0002-build-sys-allow-override-of-BB_BT-build-tag-from-com.patch
+0003-init-console.patch
+0004-stop-checking-ancient-kernel-version-for-NFS-mount.patch
+0005-Revert-9c143ce52da11ec3d21a3491c3749841d3dc10f0-just.patch
+0006-Temporary-hack-re-enable-invalid-variable-names.patch
+0007-install-readlink-in-bin.patch
+0008-Spelling-recevied-delimeter.patch
+0009-buildsys-resurrect-PLATFORM_LINUX-and-depend-on-it-f.patch
+0010-Fix-non-Linux-builds.patch
+0011-use-libresolv-on-non-linux-too.patch
+0012-0001-ubnt-dhcp-decline-feature.patch.patch
+0013-0002-ubnt-min-lease-time-6-sec.patch.patch
+0014-0003-udhpc-omit-vendor-class-identifier.patch.patch
+0015-udhcp-set-DHCP-messages-CoS-priority-to-6.patch
+0016-udhcp-use-the-define-instead-of-value-comment.patch
+0017-udhcp-change-default-dhcp-requirements-options.patch
+0018-Add-IP-ToS.patch

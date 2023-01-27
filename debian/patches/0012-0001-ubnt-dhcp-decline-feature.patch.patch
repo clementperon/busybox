@@ -1,20 +1,14 @@
-From eff046eefbed96af083f89bfeb141e5e90d97418 Mon Sep 17 00:00:00 2001
+From 1a7c1175a20f3aff67498345d8d3fe083cd134fa Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Tue, 27 Dec 2022 21:00:24 +0100
-Subject: [PATCH 1/7] 0001-ubnt-dhcp-decline-feature.patch
+Subject: 0001-ubnt-dhcp-decline-feature.patch
 
----
- networking/udhcp/Config.src | 16 ++++++++
- networking/udhcp/common.h   |  2 +-
- networking/udhcp/dhcpc.c    | 80 ++++++++++++++++++++++++++++++++++++-
- networking/udhcp/dhcpc.h    |  2 +
- 4 files changed, 98 insertions(+), 2 deletions(-)
 
 diff --git a/networking/udhcp/Config.src b/networking/udhcp/Config.src
-index 8c8c11c26..79f58e9d3 100644
+index 9ea368ad9..88929792e 100644
 --- a/networking/udhcp/Config.src
 +++ b/networking/udhcp/Config.src
-@@ -120,6 +120,22 @@ config FEATURE_UDHCP_PORT
+@@ -123,6 +123,22 @@ config FEATURE_UDHCP_PORT
  	At the cost of ~300 bytes, enables -P port option.
  	This feature is typically not needed.
  
@@ -219,6 +213,3 @@ index 19b054b32..ed51683dc 100644
  } FIX_ALIASING;
  
  /* server_config sits in 1st half of bb_common_bufsiz1 */
--- 
-2.34.1
-

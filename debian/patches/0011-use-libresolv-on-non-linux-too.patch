@@ -1,19 +1,24 @@
+From 97fda5b22e7373f6b163c3d0b665f10d337a71de Mon Sep 17 00:00:00 2001
 From: Michael Tokarev <mjt@tls.msk.ru>
+Date: Fri, 4 Nov 2022 18:10:18 +0300
 Subject: use libresolv on non-linux too
-Date: Fri, 04 Nov 2022 18:10:18 +0300
 
 nslookup uses symbols from libresolv, no matter it is
 on linux or not. This also eliminates hackish way to
 detect linux.
 
 diff --git a/Makefile.flags b/Makefile.flags
-index c34356230..f26ce719e 100644
+index 158aa32f4..aa7e7feb6 100644
 --- a/Makefile.flags
 +++ b/Makefile.flags
-@@ -186,6 +186,4 @@ endif
+@@ -188,10 +188,8 @@ LDLIBS += $(if $(SELINUX_LIBS),$(SELINUX_LIBS:-l%=%),$(SELINUX_PC_MODULES:lib%=%
+ endif
+ 
  ifeq ($(CONFIG_FEATURE_NSLOOKUP_BIG),y)
 -ifneq (,$(findstring linux,$(shell $(CC) $(CFLAGS) -dumpmachine)))
  LDLIBS += resolv
--endif
  endif
+-endif
  
+ ifeq ($(CONFIG_EFENCE),y)
+ LDLIBS += efence

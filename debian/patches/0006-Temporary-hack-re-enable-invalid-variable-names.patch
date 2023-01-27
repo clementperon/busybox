@@ -1,6 +1,7 @@
-Subject: Temporary hack re-enable invalid variable names
+From 9a5c5457a3be87c01f37e600d6d7aba6f0ed2b24 Mon Sep 17 00:00:00 2001
 From: Chris Boot <bootc@debian.org>
-Forwarded: not-needed
+Date: Mon, 23 Jan 2023 15:58:03 +0100
+Subject: Temporary hack re-enable invalid variable names
 
 Upstream busybox commit b6838b520 ("ash: [VAR] Sanitise environment
 variable names on entry") breaks assumptions used by debian-installer's
@@ -14,9 +15,11 @@ needed to parse the values from the kernel command-line, but we don't
 want to be responsible for holding up the debian-installer alpha
 release any longer than it has already.
 
+diff --git a/shell/Config.src b/shell/Config.src
+index 5efbf9995..b611a84d3 100644
 --- a/shell/Config.src
 +++ b/shell/Config.src
-@@ -184,6 +184,13 @@
+@@ -184,6 +184,13 @@ config FEATURE_SH_EMBEDDED_SCRIPTS
  	the script in 'applets_sh' and a stub C file containing
  	configuration in the appropriate subsystem directory.
  
@@ -30,9 +33,11 @@ release any longer than it has already.
  endif # Options common to all shells
  
  endmenu
+diff --git a/shell/ash.c b/shell/ash.c
+index 875403295..b4156d64a 100644
 --- a/shell/ash.c
 +++ b/shell/ash.c
-@@ -14401,8 +14401,13 @@
+@@ -14401,8 +14401,13 @@ init(void)
  
  		initvar();
  		for (envp = environ; envp && *envp; envp++) {

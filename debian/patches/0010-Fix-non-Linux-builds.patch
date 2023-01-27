@@ -1,3 +1,4 @@
+From 59b217db117d839b2451a6f19300a4b8d23ff40f Mon Sep 17 00:00:00 2001
 From: Samuel Thibault <samuel.thibault@ens-lyon.org>
 Date: Sun, 16 Oct 2022 02:04:59 +0200
 Subject: Fix non-Linux builds
@@ -78,13 +79,12 @@ index 06c1b7b9c..3e034eb1e 100644
 +		}
  #endif
  		xmove_fd(xopen(outfile, oflag), ofd);
-
-
+ 
 diff --git a/networking/traceroute.c b/networking/traceroute.c
-index 4bbe1ab8e..2ba990fd0 100644
+index fb9315db5..760ed6d64 100644
 --- a/networking/traceroute.c
 +++ b/networking/traceroute.c
-@@ -963,8 +963,10 @@ traceroute_init(int op, char **argv)
+@@ -964,8 +964,10 @@ traceroute_init(int op, char **argv)
  	if (af == AF_INET) {
  		xmove_fd(xsocket(AF_INET, SOCK_RAW, IPPROTO_ICMP), rcvsock);
  #if ENABLE_FEATURE_TRACEROUTE_VERBOSE
@@ -95,4 +95,3 @@ index 4bbe1ab8e..2ba990fd0 100644
  #endif
  	}
  #if ENABLE_TRACEROUTE6
- 
