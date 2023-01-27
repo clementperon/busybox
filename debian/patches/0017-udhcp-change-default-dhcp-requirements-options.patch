@@ -1,4 +1,4 @@
-From e9ed81bfbee222862d8efc38c119275bf9a6e401 Mon Sep 17 00:00:00 2001
+From 381770594e126117a54c978b98aee14fdea8b99b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Fri, 13 Jan 2023 18:11:28 +0100
 Subject: udhcp: change default dhcp requirements options
