@@ -1,4 +1,4 @@
-From 025564b01082725be58a4d4d97d00701f1703821 Mon Sep 17 00:00:00 2001
+From a8fe97000e519a77155a406488733539eee2fc94 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Mon, 16 Jan 2023 15:22:30 +0100
 Subject: udhcp: use the define instead of value + comment

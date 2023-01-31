@@ -1,14 +1,14 @@
-From 9f5ad8e59d99268db0566d614cb03032d8cb0cdb Mon Sep 17 00:00:00 2001
+From f0cf0023eec51c1cd2ea5f6a7e751f6de6c95afc Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 Date: Mon, 23 Jan 2023 16:00:25 +0100
 Subject: Add IP ToS
 
 
 diff --git a/networking/udhcp/packet.c b/networking/udhcp/packet.c
-index e4315321d..988bcc175 100644
+index ef56e54d2..bda49128b 100644
 --- a/networking/udhcp/packet.c
 +++ b/networking/udhcp/packet.c
-@@ -159,9 +159,13 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
+@@ -158,9 +158,13 @@ int FAST_FUNC udhcp_send_raw_packet(struct dhcp_packet *dhcp_pkt,
  	if (padding > DHCP_SIZE - 300)
  		padding = DHCP_SIZE - 300;
  
