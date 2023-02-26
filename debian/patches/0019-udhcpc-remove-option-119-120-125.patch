@@ -1,0 +1,25 @@
+From 17bb77fdb5f4a4d0c8c1a3f09194266dec5e5fd3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Date: Sun, 26 Feb 2023 11:50:03 +0100
+Subject: [PATCH] udhcpc: remove option 119/120/125
+
+
+diff --git a/networking/udhcp/common.c b/networking/udhcp/common.c
+index 8a9080fb3..2f8cc2412 100644
+--- a/networking/udhcp/common.c
++++ b/networking/udhcp/common.c
+@@ -61,11 +61,11 @@ const struct dhcp_optflag dhcp_optflags[] = {
+ 	{ OPTION_STRING                           , DHCP_PCODE },
+ 	{ OPTION_STRING                           , DHCP_TCODE },
+ #if ENABLE_FEATURE_UDHCP_RFC3397
+-	{ OPTION_DNS_STRING | OPTION_LIST | OPTION_REQ, DHCP_DOMAIN_SEARCH },
+-	{ OPTION_SIP_SERVERS          | OPTION_REQ, DHCP_SIP_SERVERS },
++	{ OPTION_DNS_STRING | OPTION_LIST         , DHCP_DOMAIN_SEARCH },
++	{ OPTION_SIP_SERVERS                      , DHCP_SIP_SERVERS },
+ #endif
+ 	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_STATIC_ROUTES },
+-	{ OPTION_STRING               | OPTION_REQ, DHCP_VENDOR_IDENTIFYING},
++	{ OPTION_STRING                           , DHCP_VENDOR_IDENTIFYING},
+ #if ENABLE_FEATURE_UDHCP_8021Q
+ 	{ OPTION_U16                              , DHCP_VLAN_ID },
+ 	{ OPTION_U8                               , DHCP_VLAN_PRIORITY },

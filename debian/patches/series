@@ -21,3 +21,4 @@
 0016-udhcp-use-the-define-instead-of-value-comment.patch
 0017-udhcp-change-default-dhcp-requirements-options.patch
 0018-Add-IP-ToS.patch
+0019-udhcpc-remove-option-119-120-125.patch
