@@ -61,11 +61,11 @@ const struct dhcp_optflag dhcp_optflags[] = {
 	{ OPTION_STRING                           , DHCP_PCODE },
 	{ OPTION_STRING                           , DHCP_TCODE },
 #if ENABLE_FEATURE_UDHCP_RFC3397
-	{ OPTION_DNS_STRING | OPTION_LIST | OPTION_REQ, DHCP_DOMAIN_SEARCH },
-	{ OPTION_SIP_SERVERS          | OPTION_REQ, DHCP_SIP_SERVERS },
+	{ OPTION_DNS_STRING | OPTION_LIST         , DHCP_DOMAIN_SEARCH },
+	{ OPTION_SIP_SERVERS                      , DHCP_SIP_SERVERS },
 #endif
 	{ OPTION_STATIC_ROUTES | OPTION_LIST      , DHCP_STATIC_ROUTES },
-	{ OPTION_STRING               | OPTION_REQ, DHCP_VENDOR_IDENTIFYING},
+	{ OPTION_STRING                           , DHCP_VENDOR_IDENTIFYING},
 #if ENABLE_FEATURE_UDHCP_8021Q
 	{ OPTION_U16                              , DHCP_VLAN_ID },
 	{ OPTION_U8                               , DHCP_VLAN_PRIORITY },
